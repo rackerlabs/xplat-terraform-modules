@@ -2,7 +2,7 @@
  * Module: xplat-ui-deploy
  */
 
- variable "bucket_name" {
+variable "bucket_name" {
   description = "The name of the bucket we're putting the ui in."
 }
 
@@ -15,7 +15,7 @@ variable "domain" {
 }
 
 variable "region" {
-  default = "us-east-1"
+  default     = "us-east-1"
   description = "The region to deploy the ui to."
 }
 

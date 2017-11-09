@@ -11,6 +11,6 @@ variable "s3_policy_actions" {
 
 # S3 events to trigger the Lambda function for
 variable "s3_events" {
-    type = "list"
-    default = ["s3:ObjectCreated:*"]
+  type    = "list"
+  default = ["s3:ObjectCreated:*"]
 }

@@ -2,51 +2,47 @@
 # Base AssumeRole policy for Lambda execution.
 data "aws_iam_policy_document" "execution_lambda_policy" {
   statement {
-
     actions = [
-      "sts:AssumeRole"
+      "sts:AssumeRole",
     ]
 
     principals {
       type = "Service"
+
       identifiers = [
-          "lambda.amazonaws.com",
-          "apigateway.amazonaws.com"
+        "lambda.amazonaws.com",
+        "apigateway.amazonaws.com",
       ]
     }
-
   }
 }
 
 # Base policy for Lambda to execute.
 data "aws_iam_policy_document" "base_lambda_policy" {
   statement {
-
     actions = [
       "logs:*",
       "lambda:InvokeFunction",
       "xray:PutTraceSegments",
-      "xray:PutTelemetryRecords"
+      "xray:PutTelemetryRecords",
     ]
 
     resources = ["*"]
-
   }
 }
 
 # Create Lambda role with AssumeRole policy.
 resource "aws_iam_role" "execution_lambda_role" {
-  name = "${var.stage}_${var.name}_lambda"
+  name               = "${var.stage}_${var.name}_lambda"
   assume_role_policy = "${data.aws_iam_policy_document.execution_lambda_policy.json}"
 }
 
 # Attach base policy to Lambda role
 resource "aws_iam_role_policy" "base_lambda_policy" {
-  name = "${var.stage}_${var.name}_lambda_policy"
-  role = "${aws_iam_role.execution_lambda_role.id}"
+  name   = "${var.stage}_${var.name}_lambda_policy"
+  role   = "${aws_iam_role.execution_lambda_role.id}"
   policy = "${data.aws_iam_policy_document.base_lambda_policy.json}"
 }
-
 
 # Lambda
 resource "aws_lambda_function" "lambda" {
@@ -75,8 +71,7 @@ data "template_file" "function_version" {
     function_version = "${aws_lambda_function.lambda.version}"
   }
 
-  depends_on       = ["aws_lambda_function.lambda"]
-
+  depends_on = ["aws_lambda_function.lambda"]
 }
 
 resource "aws_lambda_alias" "lambda_alias" {
@@ -84,27 +79,29 @@ resource "aws_lambda_alias" "lambda_alias" {
   function_name    = "${aws_lambda_function.lambda.arn}"
   function_version = "${data.template_file.function_version.rendered}"
 
-  depends_on       = ["aws_lambda_function.lambda", "data.template_file.function_version"]
+  depends_on = ["aws_lambda_function.lambda", "data.template_file.function_version"]
 }
 
 # Cloudwatch
 resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
-    alarm_name = "${var.stage}_${var.name}_lambda_throttles"
-    count = "${var.enable_monitoring}"  # Only create on certain stages.
-    comparison_operator = "GreaterThanOrEqualToThreshold"
-    evaluation_periods = "2"
-    metric_name = "Throttles"
-    namespace = "AWS/Lambda"
-    period = "300"
-    statistic = "Sum"
-    threshold = "1"
-    alarm_description = "${var.stage} ${var.name} Lambda Throttles"
-    insufficient_data_actions = []
-    dimensions {
-        FunctionName = "${var.stage}_${var.name}",
-        Resource = "${var.stage}_${var.name}:${var.stage}"
-    }
-    alarm_actions = ["${var.alarm_actions}"]
+  alarm_name                = "${var.stage}_${var.name}_lambda_throttles"
+  count                     = "${var.enable_monitoring}"                  # Only create on certain stages.
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = "2"
+  metric_name               = "Throttles"
+  namespace                 = "AWS/Lambda"
+  period                    = "300"
+  statistic                 = "Sum"
+  threshold                 = "1"
+  alarm_description         = "${var.stage} ${var.name} Lambda Throttles"
+  insufficient_data_actions = []
+
+  dimensions {
+    FunctionName = "${var.stage}_${var.name}"
+    Resource     = "${var.stage}_${var.name}:${var.stage}"
+  }
+
+  alarm_actions = ["${var.alarm_actions}"]
 }
 
 # This is needed for creating the invocation ARN

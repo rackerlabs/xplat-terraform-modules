@@ -11,7 +11,8 @@ variable "stream_starting_position" {
 }
 
 variable "kinesis_actions" {
-  type    = "list"
+  type = "list"
+
   default = [
     "kinesis:DescribeStream",
     "kinesis:GetShardIterator",
