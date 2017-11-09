@@ -70,8 +70,6 @@ resource "aws_api_gateway_rest_api" "api" {
 }
 
 resource "aws_api_gateway_deployment" "stage" {
-  depends_on = ["aws_api_gateway_rest_api.api"]
-
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "${var.stage}"
 
@@ -79,6 +77,9 @@ resource "aws_api_gateway_deployment" "stage" {
     "version" = "${md5(data.template_file.swagger_file.rendered)}"
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 data "aws_acm_certificate" "ssl_cert" {
