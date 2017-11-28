@@ -48,3 +48,7 @@ variable "description" {
   type    = "string"
   default = ""
 }
+variable "kms_key_arn" {
+  type = "string"
+  default = ""
+}

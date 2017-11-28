@@ -56,6 +56,7 @@ resource "aws_lambda_function" "lambda" {
   source_code_hash = "${base64sha256(file("${var.file}"))}"
   runtime          = "${var.runtime}"
   description      = "${var.description} (stage: ${var.stage})"
+  kms_key_arn      = "${var.kms_key_arn}"
 
   environment {
     variables = "${var.env_variables}"

@@ -26,3 +26,7 @@ variable "service_name" {
 variable "stage" {
   description = "The stage of the ui build."
 }
+
+variable "routing_rules_template_path" {
+  description = "The file path to the routing rules template."
+}

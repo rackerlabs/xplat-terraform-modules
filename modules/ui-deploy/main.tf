@@ -6,11 +6,12 @@
  *
  */
 
-# This module uses conditionals and therefore needs at least 0.8.0
-# https://github.com/hashicorp/terraform/blob/master/CHANGELOG.md#080-december-13-2016
-
 terraform {
-  required_version = ">= 0.8.0"
+  required_version = ">= 0.10.8"
+}
+
+locals {
+  routing_rules_template_path = "${path.module}/templates/ui-routing-rules.tpl"
 }
 
 data "template_file" "host_name" {
@@ -32,7 +33,7 @@ data "template_file" "ui_policy" {
 }
 
 data "template_file" "ui_routing_rules" {
-  template = "${file("${path.module}/templates/ui-routing-rules.tpl")}"
+  template = "${file(coalesce(var.routing_rules_template_path, local.routing_rules_template_path))}"
 
   vars {
     host_name = "${data.template_file.host_name.rendered}"
