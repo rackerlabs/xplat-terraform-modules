@@ -21,6 +21,9 @@ data "aws_iam_policy_document" "execution_lambda_policy" {
 data "aws_iam_policy_document" "base_lambda_policy" {
   statement {
     actions = [
+      "ec2:CreateNetworkInterface",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DeleteNetworkInterface",
       "logs:*",
       "lambda:InvokeFunction",
       "xray:PutTraceSegments",
