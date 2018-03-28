@@ -48,6 +48,7 @@ data "template_file" "swagger_file" {
   template = "${var.swagger_template}"
 
   vars {
+    authorizer_type       = "${var.authorizer_type}"
     authorizer_arn        = "${var.authorizer_arn}"
     authorizer_header     = "${var.authorizer_header}"
     authorizer_role       = "${aws_iam_role.api_gateway_invoker.arn}"

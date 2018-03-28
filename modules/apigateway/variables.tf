@@ -23,6 +23,11 @@ variable "authorizer_ttl" {
   default = ""
 }
 
+variable "authorizer_type" {
+  type    = "string"
+  default = "token"
+}
+
 variable "base_path" {
   type    = "string"
   default = ""
