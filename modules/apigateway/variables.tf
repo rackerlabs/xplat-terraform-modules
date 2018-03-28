@@ -18,6 +18,11 @@ variable "authorizer_expression" {
   default = ""
 }
 
+variable "authorizer_identity_source" {
+  type    = "string"
+  default = ""
+}
+
 variable "authorizer_ttl" {
   type    = "string"
   default = ""

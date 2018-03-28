@@ -48,17 +48,18 @@ data "template_file" "swagger_file" {
   template = "${var.swagger_template}"
 
   vars {
-    authorizer_type       = "${var.authorizer_type}"
-    authorizer_arn        = "${var.authorizer_arn}"
-    authorizer_header     = "${var.authorizer_header}"
-    authorizer_role       = "${aws_iam_role.api_gateway_invoker.arn}"
-    authorizer_expression = "${var.authorizer_expression}"
-    authorizer_ttl        = "${var.authorizer_ttl}"
-    lambda_arn            = "${var.lambda_arn}"
-    lambda_role           = "${aws_iam_role.api_gateway_invoker.arn}"
-    stage                 = "${var.stage != "prod" ? format("%s-", var.stage) : ""}"
-    api_name              = "${var.stage}_${var.name}"
-    description           = "${var.description} (stage: ${var.stage})"
+    authorizer_type            = "${var.authorizer_type}"
+    authorizer_arn             = "${var.authorizer_arn}"
+    authorizer_header          = "${var.authorizer_header}"
+    authorizer_role            = "${aws_iam_role.api_gateway_invoker.arn}"
+    authorizer_expression      = "${var.authorizer_expression}"
+    authorizer_identity_source = "${var.authorizer_identity_source}"
+    authorizer_ttl             = "${var.authorizer_ttl}"
+    lambda_arn                 = "${var.lambda_arn}"
+    lambda_role                = "${aws_iam_role.api_gateway_invoker.arn}"
+    stage                      = "${var.stage != "prod" ? format("%s-", var.stage) : ""}"
+    api_name                   = "${var.stage}_${var.name}"
+    description                = "${var.description} (stage: ${var.stage})"
   }
 }
 
