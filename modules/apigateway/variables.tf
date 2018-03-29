@@ -77,3 +77,8 @@ variable "description" {
   type    = "string"
   default = ""
 }
+
+variable "binary_media_types" {
+  type    = "list"
+  default = []
+}

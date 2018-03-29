@@ -64,9 +64,10 @@ data "template_file" "swagger_file" {
 }
 
 resource "aws_api_gateway_rest_api" "api" {
-  name        = "${var.stage}_${var.name}"
-  body        = "${data.template_file.swagger_file.rendered}"
-  description = "${var.description} (stage: ${var.stage})"
+  name               = "${var.stage}_${var.name}"
+  body               = "${data.template_file.swagger_file.rendered}"
+  description        = "${var.description} (stage: ${var.stage})"
+  binary_media_types = ["${var.binary_media_types}"]
 }
 
 resource "aws_api_gateway_deployment" "stage" {
