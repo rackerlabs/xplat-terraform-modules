@@ -16,7 +16,7 @@ resource "aws_sqs_queue" "queue" {
   name           = "${var.stage}_${var.name}_queue"
   redrive_policy = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.dead_letter_queue.arn}\",\"maxReceiveCount\":4}"
 
-  visibility_timeout_seconds = 120
+  visibility_timeout_seconds = "${var.visibility_timeout_seconds}"
 
   tags {
     stage   = "${var.stage}"
