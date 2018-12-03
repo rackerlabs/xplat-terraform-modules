@@ -25,7 +25,6 @@ data "aws_iam_policy_document" "base_lambda_policy" {
       "ec2:DescribeNetworkInterfaces",
       "ec2:DeleteNetworkInterface",
       "logs:*",
-      "lambda:InvokeFunction",
       "xray:PutTraceSegments",
       "xray:PutTelemetryRecords",
     ]
