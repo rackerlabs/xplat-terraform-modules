@@ -82,3 +82,8 @@ variable "binary_media_types" {
   type    = "list"
   default = []
 }
+
+variable "tags" {
+  type    = "map"
+  default = {}
+}
