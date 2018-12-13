@@ -42,7 +42,7 @@ resource "aws_s3_bucket" "bucket_for_trail" {
               "Service": "cloudtrail.amazonaws.com"
             },
             "Action": "s3:GetBucketAcl",
-            "Resource": "arn:aws:s3:::${aws_s3_bucket.content_bucket.id}"
+            "Resource": "arn:aws:s3:::${aws_s3_bucket.content_bucket.id}-writes"
         },
         {
             "Sid": "AWSCloudTrailWrite",
@@ -51,7 +51,7 @@ resource "aws_s3_bucket" "bucket_for_trail" {
               "Service": "cloudtrail.amazonaws.com"
             },
             "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::${aws_s3_bucket.content_bucket.id}/*",
+            "Resource": "arn:aws:s3:::${aws_s3_bucket.content_bucket.id}-writes/*",
             "Condition": {
                 "StringEquals": {
                     "s3:x-amz-acl": "bucket-owner-full-control"
