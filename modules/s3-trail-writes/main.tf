@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "content_bucket" {
 
 resource "aws_cloudtrail" "bucket_trail" {
   name                          = "${var.bucket_name}-writes"
-  s3_bucket_name                = "${aws_s3_bucket.content_bucket.id}"
+  s3_bucket_name                = "${aws_s3_bucket.bucket_for_trail.id}"
   include_global_service_events = false
 
   event_selector {
