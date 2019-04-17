@@ -15,3 +15,7 @@ The SQS queue will instead consume messages from the SNS topic and then automati
 * name - Used, along with `stage`, to create the name of the main queue and the dead letter queue. Also used for some tags.
 
 * stage - See `name`.
+
+* enable_monitoring - Probably want to set this to `1` in a `prod` environment, so that you get alerted when something hits the DLQ.
+
+* alarm_actions - List of SNS topic ARNs and/or email addresses where the alarm should be sent to.

@@ -82,3 +82,28 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
   enabled          = true
   function_name    = "${var.lambda_arn}"
 }
+
+# CloudWatch Alarm
+resource "aws_cloudwatch_metric_alarm" "dlq_queue_size" {
+  count = "${var.enable_monitoring}" # Only create on certain stages.
+
+  alarm_description   = "${var.stage}_${var.name} Dead Letter Queue size"
+  alarm_name          = "${var.stage}_${var.name}_dead_letter_queue_size"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  period              = "120"
+  evaluation_periods  = "1"
+  datapoints_to_alarm = "1"
+  metric_name         = "ApproximateNumberOfMessagesVisible"
+  namespace           = "AWS/SQS"
+  statistic           = "Sum"
+  threshold           = "1"
+  treat_missing_data  = "notBreaching"
+
+  dimensions {
+    QueueName = "${aws_sqs_queue.dead_letter_queue.name}"
+  }
+
+  alarm_actions             = ["${var.alarm_actions}"]
+  insufficient_data_actions = []
+  ok_actions                = ["${var.alarm_actions}"]
+}

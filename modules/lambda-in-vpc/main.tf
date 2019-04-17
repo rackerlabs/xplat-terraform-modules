@@ -94,10 +94,12 @@ resource "aws_lambda_alias" "lambda_alias" {
   depends_on = ["aws_lambda_function.lambda", "data.template_file.function_version"]
 }
 
-# Cloudwatch
+# CloudWatch Alarms
 resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
+  count = "${var.enable_monitoring}" # Only create on certain stages.
+
+  alarm_description         = "${var.stage} ${var.name} Lambda Throttles"
   alarm_name                = "${var.stage}_${var.name}_lambda_throttles"
-  count                     = "${var.enable_monitoring}"                  # Only create on certain stages.
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = "2"
   metric_name               = "Throttles"
@@ -105,8 +107,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   period                    = "300"
   statistic                 = "Sum"
   threshold                 = "1"
-  alarm_description         = "${var.stage} ${var.name} Lambda Throttles"
-  insufficient_data_actions = []
+  treat_missing_data        = "notBreaching"
 
   dimensions {
     FunctionName = "${var.stage}_${var.name}"
@@ -114,6 +115,31 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   }
 
   alarm_actions = ["${var.alarm_actions}"]
+  ok_actions    = ["${var.alarm_actions}"]
+}
+
+resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
+  count = "${var.enable_monitoring}" # Only create on certain stages.
+
+  alarm_description   = "${var.stage} ${var.name} Lambda Errors"
+  alarm_name          = "${var.stage}_${var.service_name}_lambda_errors"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  datapoints_to_alarm = "1"
+  evaluation_periods  = "2"
+  metric_name         = "Errors"
+  namespace           = "AWS/Lambda"
+  period              = "60"
+  statistic           = "Sum"
+  threshold           = "1"
+  treat_missing_data  = "notBreaching"
+
+  dimensions {
+    FunctionName = "${var.stage}_${var.name}"
+    Resource     = "${var.stage}_${var.name}:${var.stage}"
+  }
+
+  alarm_actions = ["${var.alarm_actions}"]
+  ok_actions    = ["${var.alarm_actions}"]
 }
 
 # This is needed for creating the invocation ARN

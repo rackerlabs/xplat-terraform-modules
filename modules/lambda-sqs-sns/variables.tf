@@ -13,3 +13,15 @@ variable "sns_arn" {}
 variable "visibility_timeout_seconds" {
   default = 120
 }
+
+variable "enable_monitoring" {
+  type    = "string"
+  default = 0
+}
+
+# List of SNS topic ARNs and/or email addresses
+variable "alarm_actions" {
+  type    = "list"
+  default = []
+}
+
