@@ -105,5 +105,5 @@ resource "aws_cloudwatch_metric_alarm" "dlq_queue_size" {
 
   alarm_actions             = ["${var.alarm_actions}"]
   insufficient_data_actions = []
-  ok_actions                = ["${var.alarm_actions}"]
+  ok_actions                = ["${var.ok_actions}"]
 }

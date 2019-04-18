@@ -3,6 +3,11 @@ variable "alarm_actions" {
   default = []
 }
 
+variable "ok_actions" {
+  type    = "list"
+  default = []
+}
+
 variable "enable_monitoring" {
   type    = "string"
   default = 0

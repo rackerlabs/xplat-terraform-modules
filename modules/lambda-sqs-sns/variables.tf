@@ -25,3 +25,8 @@ variable "alarm_actions" {
   default = []
 }
 
+# If you want the alerts to auto-clear, use this as well
+variable "ok_actions" {
+  type    = "list"
+  default = []
+}

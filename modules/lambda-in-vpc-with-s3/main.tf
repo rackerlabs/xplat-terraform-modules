@@ -116,7 +116,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   }
 
   alarm_actions = ["${var.alarm_actions}"]
-  ok_actions    = ["${var.alarm_actions}"]
+  ok_actions    = ["${var.ok_actions}"]
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
@@ -140,7 +140,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   }
 
   alarm_actions = ["${var.alarm_actions}"]
-  ok_actions    = ["${var.alarm_actions}"]
+  ok_actions    = ["${var.ok_actions}"]
 }
 
 # This is needed for creating the invocation ARN
