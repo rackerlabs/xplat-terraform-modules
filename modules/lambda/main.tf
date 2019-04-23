@@ -115,7 +115,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   count = "${var.enable_monitoring}" # Only create on certain stages.
 
   alarm_description   = "${var.stage} ${var.name} Lambda Errors"
-  alarm_name          = "${var.stage}_${var.service_name}_lambda_errors"
+  alarm_name          = "${var.stage}_${var.name}_lambda_errors"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   datapoints_to_alarm = "1"
   evaluation_periods  = "2"
