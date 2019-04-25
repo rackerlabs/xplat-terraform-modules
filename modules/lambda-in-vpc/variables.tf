@@ -64,6 +64,11 @@ variable "security_group_ids" {
   default = []
 }
 
+variable "kms_key_arn" {
+  type    = "string"
+  default = ""
+}
+
 variable "tracing_mode" {
   type    = "string"
   default = "PassThrough"
@@ -72,4 +77,9 @@ variable "tracing_mode" {
 variable "tags" {
   type    = "map"
   default = {}
+}
+
+variable "reserved_concurrent_executions" {
+  type    = "string"
+  default = "-1"
 }

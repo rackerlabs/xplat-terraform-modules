@@ -68,3 +68,8 @@ variable "tags" {
   type    = "map"
   default = {}
 }
+
+variable "reserved_concurrent_executions" {
+  type    = "string"
+  default = "-1"
+}

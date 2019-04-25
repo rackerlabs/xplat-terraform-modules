@@ -46,18 +46,20 @@ resource "aws_iam_role_policy" "base_lambda_policy" {
 
 # Lambda
 resource "aws_lambda_function" "lambda" {
-  function_name    = "${var.stage}_${var.name}"
-  s3_bucket        = "${var.s3_bucket}"
-  s3_key           = "${var.s3_key}"
-  role             = "${aws_iam_role.execution_lambda_role.arn}"
-  handler          = "${var.handler}"
-  memory_size      = "${var.memory_size}"
-  timeout          = "${var.timeout}"
-  publish          = "${var.publish}"
-  source_code_hash = "${var.source_code_hash}"
-  runtime          = "${var.runtime}"
-  description      = "${var.description} (stage: ${var.stage})"
-  kms_key_arn      = "${var.kms_key_arn}"
+  function_name                  = "${var.stage}_${var.name}"
+  s3_bucket                      = "${var.s3_bucket}"
+  s3_key                         = "${var.s3_key}"
+  role                           = "${aws_iam_role.execution_lambda_role.arn}"
+  handler                        = "${var.handler}"
+  memory_size                    = "${var.memory_size}"
+  timeout                        = "${var.timeout}"
+  publish                        = "${var.publish}"
+  source_code_hash               = "${var.source_code_hash}"
+  runtime                        = "${var.runtime}"
+  description                    = "${var.description} (stage: ${var.stage})"
+  kms_key_arn                    = "${var.kms_key_arn}"
+  tags                           = "${var.tags}"
+  reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
 
   tracing_config {
     mode = "${var.tracing_mode}"
@@ -92,16 +94,16 @@ resource "aws_lambda_alias" "lambda_alias" {
 resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   count = "${var.enable_monitoring}" # Only create on certain stages.
 
-  alarm_description         = "${var.stage} ${var.name} Lambda Throttles"
-  alarm_name                = "${var.stage}_${var.name}_lambda_throttles"
-  comparison_operator       = "GreaterThanOrEqualToThreshold"
-  evaluation_periods        = "2"
-  metric_name               = "Throttles"
-  namespace                 = "AWS/Lambda"
-  period                    = "300"
-  statistic                 = "Sum"
-  threshold                 = "1"
-  treat_missing_data        = "notBreaching"
+  alarm_description   = "${var.stage} ${var.name} Lambda Throttles"
+  alarm_name          = "${var.stage}_${var.name}_lambda_throttles"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "Throttles"
+  namespace           = "AWS/Lambda"
+  period              = "300"
+  statistic           = "Sum"
+  threshold           = "1"
+  treat_missing_data  = "notBreaching"
 
   dimensions {
     FunctionName = "${var.stage}_${var.name}"
