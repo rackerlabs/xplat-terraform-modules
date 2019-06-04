@@ -30,3 +30,8 @@ variable "ok_actions" {
   type    = "list"
   default = []
 }
+
+variable "filter_policy" {
+  type    = "string"
+  default = ""
+}

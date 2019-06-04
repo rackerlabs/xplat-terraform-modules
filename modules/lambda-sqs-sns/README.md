@@ -19,3 +19,5 @@ The SQS queue will instead consume messages from the SNS topic and then automati
 * `enable_monitoring` - Probably want to set this to `1` in a `prod` environment, so that you get alerted when something hits the DLQ.
 
 * `alarm_actions` - List of SNS topic ARNs and/or email addresses where the alarm should be sent to. If you want the alerts to be resolved automatically, you can also set `ok_actions`
+
+* `filter_policy` - Set filter policy on the SNS subscription, meaning only certain messages will be forwarded to the SQS queue (must be JSON).

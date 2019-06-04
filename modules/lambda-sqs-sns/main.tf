@@ -70,9 +70,10 @@ resource "aws_sqs_queue_policy" "queue_policy" {
 
 # hook up SNS --> SQS
 resource "aws_sns_topic_subscription" "sns_to_sqs" {
-  topic_arn = "${var.sns_arn}"
-  protocol  = "sqs"
-  endpoint  = "${aws_sqs_queue.queue.arn}"
+  topic_arn     = "${var.sns_arn}"
+  protocol      = "sqs"
+  endpoint      = "${aws_sqs_queue.queue.arn}"
+  filter_policy = "${var.filter_policy}"
 }
 
 # hook up SQS to the Lambda
