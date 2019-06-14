@@ -76,3 +76,8 @@ variable "reserved_concurrent_executions" {
   type    = "string"
   default = "-1"
 }
+
+variable "throttle_threshold" {
+  type    = "string"
+  default = "1"
+}

@@ -102,7 +102,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   namespace           = "AWS/Lambda"
   period              = "300"
   statistic           = "Sum"
-  threshold           = "1"
+  threshold           = "${var.throttle_threshold}"
   treat_missing_data  = "notBreaching"
 
   dimensions {
