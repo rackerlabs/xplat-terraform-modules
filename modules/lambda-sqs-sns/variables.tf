@@ -35,3 +35,18 @@ variable "filter_policy" {
   type    = "string"
   default = ""
 }
+
+variable "max_receive_count" {
+  type    = "string"
+  default = 4
+}
+
+variable "trigger_enabled" {
+  type    = "string"
+  default = true
+}
+
+variable "batch_size" {
+  type    = "string"
+  default = 5
+}

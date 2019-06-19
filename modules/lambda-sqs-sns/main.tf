@@ -14,7 +14,7 @@ resource "aws_sqs_queue" "dead_letter_queue" {
 # The actual queue the Lambda will listen to
 resource "aws_sqs_queue" "queue" {
   name           = "${var.stage}_${var.name}_queue"
-  redrive_policy = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.dead_letter_queue.arn}\",\"maxReceiveCount\":4}"
+  redrive_policy = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.dead_letter_queue.arn}\",\"maxReceiveCount\":${var.max_receive_count}}"
 
   visibility_timeout_seconds = "${var.visibility_timeout_seconds}"
 
@@ -78,9 +78,9 @@ resource "aws_sns_topic_subscription" "sns_to_sqs" {
 
 # hook up SQS to the Lambda
 resource "aws_lambda_event_source_mapping" "event_source_mapping" {
-  batch_size       = 5
+  batch_size       = "${var.batch_size}"
   event_source_arn = "${aws_sqs_queue.queue.arn}"
-  enabled          = true
+  enabled          = "${var.trigger_enabled}"
   function_name    = "${var.lambda_arn}"
 }
 

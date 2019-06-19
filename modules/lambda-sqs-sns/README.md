@@ -21,3 +21,9 @@ The SQS queue will instead consume messages from the SNS topic and then automati
 * `alarm_actions` - List of SNS topic ARNs and/or email addresses where the alarm should be sent to. If you want the alerts to be resolved automatically, you can also set `ok_actions`
 
 * `filter_policy` - Set filter policy on the SNS subscription, meaning only certain messages will be forwarded to the SQS queue (must be JSON).
+
+* `max_receive_count` - How many times a message is allowed to be processed by the Lambda before sending it to the DLQ (default: `4`)
+
+* `trigger_enabled` - The SQS->Lambda trigger can be turned off by setting this to `false` (default: `true`)
+
+* `batch_size` - Maximum number of messages a single Lambda invocation will process (default: `5`)
