@@ -3,7 +3,7 @@
 # SQS dead letter queue
 resource "aws_sqs_queue" "dead_letter_queue" {
   name                       = "${var.stage}_${var.name}_dead_letter_queue"
-  visibility_timeout_seconds = 120
+  visibility_timeout_seconds = "${var.dlq_visibility_timeout_seconds}"
 
   tags {
     stage   = "${var.stage}"

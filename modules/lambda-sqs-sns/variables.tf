@@ -9,8 +9,13 @@ variable "lambda_arn" {}
 # An SNS topic
 variable "sns_arn" {}
 
-# Timeout for messages in queue
+# Timeout for messages in the main queue
 variable "visibility_timeout_seconds" {
+  default = 120
+}
+
+# Timeout for messages in the dead-letter queue
+variable "dlq_visibility_timeout_seconds" {
   default = 120
 }
 
