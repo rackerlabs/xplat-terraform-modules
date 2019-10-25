@@ -61,6 +61,7 @@ resource "aws_lambda_function" "lambda" {
   kms_key_arn                    = "${var.kms_key_arn}"
   tags                           = "${var.tags}"
   reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
+  layers                         = ["${var.layers}"]
 
   tracing_config {
     mode = "${var.tracing_mode}"

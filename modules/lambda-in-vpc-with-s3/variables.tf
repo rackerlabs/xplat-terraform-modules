@@ -91,3 +91,8 @@ variable "throttle_threshold" {
   type    = "string"
   default = "1"
 }
+
+variable "layers" {
+  type    = "list"
+  default = []
+}
