@@ -1,7 +1,3 @@
-terraform {
-  required_version = ">= 0.12.0"
-}
-
 data "aws_iam_policy_document" "kinesis_policy_document" {
   statement {
     actions = "${var.kinesis_actions}"

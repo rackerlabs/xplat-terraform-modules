@@ -1,7 +1,3 @@
-terraform {
-  required_version = ">= 0.12.0"
-}
-
 # IAM
 # Base AssumeRole policy for Lambda execution.
 data "aws_iam_policy_document" "execution_lambda_policy" {

@@ -1,7 +1,3 @@
-terraform {
-  required_version = ">= 0.12.0"
-}
-
 # API Gateway custom domains can only use ACM certificates in us-east-1
 # due to a CloudFront limitation. Therefore, we need to make a specific
 # provider just for this to ensure ACM lookups always happen in us-east-1.

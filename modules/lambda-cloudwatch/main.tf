@@ -1,7 +1,3 @@
-terraform {
-  required_version = ">= 0.12.0"
-}
-
 resource "aws_cloudwatch_event_rule" "event_rule" {
   count = "${var.trigger_enabled}"
 
