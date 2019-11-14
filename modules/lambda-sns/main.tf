@@ -1,3 +1,6 @@
+terraform {
+  required_version = ">= 0.12.0"
+}
 # Allow the SNS topic to trigger Lambda
 resource "aws_lambda_permission" "allow_lambda_invocation" {
   statement_id  = "AllowExecutionFromSNS"

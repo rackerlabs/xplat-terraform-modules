@@ -1,3 +1,7 @@
+terraform {
+  required_version = ">= 0.12.0"
+}
+
 provider "aws" {
   region = "${var.region}"
 }
@@ -30,7 +34,7 @@ resource "aws_wafregional_ipset" "iplist_blacklist" {
 
     count = "${var.enabled}"
 
-# RULE in place. Use UI in an emergency to add new IP sets. Clean up terraform if IP block becomes 
+# RULE in place. Use UI in an emergency to add new IP sets. Clean up terraform if IP block becomes
 # permanent.
     #ip_set_descriptor {
     #    type = "IPV4"
@@ -476,11 +480,11 @@ resource "aws_wafregional_rule" "sql_injection_rule" {
 ## local or remote files
 
 resource "aws_wafregional_rule" "byte_match_traversal" {
-  
+
   name        = "${var.stage}_${var.region}_${var.api_name}_byte_match_traversal"
   # metric_name is alpha numeric only.
   metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}bytematchtraversalrule"
-  
+
   predicate {
       type    = "ByteMatch"
       data_id = "${aws_wafregional_byte_match_set.byte_set_traversal.id}"
@@ -498,7 +502,7 @@ resource "aws_wafregional_rule" "byte_match_traversal" {
 ## Server-side includes & libraries in webroot
 ## Matches request patterns for webroot objects that shouldn't be directly accessible
 resource "aws_wafregional_rule" "byte_match_webroot" {
-  
+
   name        = "${var.stage}_${var.region}_${var.api_name}_byte_match_webroot"
   # metric_name is alpha numeric only.
   metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}bytematchwebrootrule"
@@ -533,7 +537,7 @@ resource "aws_wafregional_web_acl" "rms_web_acl" {
     default_action {
        type = "${var.web_acl_default_action}"
         }
-    
+
     count = "${var.enabled}"
 
     rule {

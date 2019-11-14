@@ -1,5 +1,9 @@
 # # Set up SQS --------------------------------------------------------------
 
+terraform {
+  required_version = ">= 0.12.0"
+}
+
 # SQS dead letter queue
 resource "aws_sqs_queue" "dead_letter_queue" {
   name                       = "${var.stage}_${var.name}_dead_letter_queue"
