@@ -47,6 +47,9 @@ resource "aws_iam_role_policy" "base_lambda_policy" {
 resource "aws_lambda_function" "lambda" {
   function_name                  = "${var.stage}_${var.name}"
   filename                       = var.file
+  s3_bucket                      = var.s3_bucket
+  s3_key                         = var.s3_key
+  source_code_hash               = var.source_code_hash
   role                           = aws_iam_role.execution_lambda_role.arn
   handler                        = var.handler
   memory_size                    = var.memory_size
