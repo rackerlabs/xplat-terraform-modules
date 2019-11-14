@@ -24,8 +24,8 @@ variable "dlq_visibility_timeout_seconds" {
 }
 
 variable "enable_monitoring" {
-  type    = string
-  default = 0
+  type    = bool
+  default = false
 }
 
 # List of SNS topic ARNs and/or email addresses

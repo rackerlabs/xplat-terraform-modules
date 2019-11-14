@@ -1,5 +1,16 @@
 # IAM
 # Base AssumeRole policy for Lambda execution.
+
+locals {
+  vpc_configs = var.vpc_config == null ? [] : [{
+    "security_group_ids" = var.vpc_config.security_group_ids
+    "subnet_ids"         = var.vpc_config.subnet_ids
+  }]
+
+  security_group_ids = var.vpc_config == null ? null : var.vpc_config.security_group_ids
+  subnet_ids = var.vpc_config == null ? null : var.vpc_config.subnet_ids
+}
+
 data "aws_iam_policy_document" "execution_lambda_policy" {
   statement {
     actions = [
@@ -49,7 +60,7 @@ resource "aws_lambda_function" "lambda" {
   filename                       = var.file
   s3_bucket                      = var.s3_bucket
   s3_key                         = var.s3_key
-  source_code_hash               = var.source_code_hash || filebase64sha256(var.file)
+  source_code_hash               = var.source_code_hash != null ? var.source_code_hash : filebase64sha256(var.file)
   role                           = aws_iam_role.execution_lambda_role.arn
   handler                        = var.handler
   memory_size                    = var.memory_size
@@ -70,7 +81,13 @@ resource "aws_lambda_function" "lambda" {
     variables = var.env_variables
   }
 
-  vpc_config = var.vpc_config
+  dynamic "vpc_config" {
+    for_each = local.vpc_configs
+    content {
+      security_group_ids = local.security_group_ids
+      subnet_ids         = local.subnet_ids
+    }
+  }
 }
 
 # Temporary work-around for https://github.com/terraform-providers/terraform-provider-aws/issues/626 -
@@ -98,7 +115,7 @@ resource "aws_lambda_alias" "lambda_alias" {
 
 # CloudWatch Alarms
 resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
-  count = var.enable_monitoring # Only create on certain stages.
+  count = var.enable_monitoring ? 1 : 0 # Only create on certain stages.
 
   alarm_description   = "${var.stage} ${var.name} Lambda Throttles"
   alarm_name          = "${var.stage}_${var.name}_lambda_throttles"
@@ -121,7 +138,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
-  count = var.enable_monitoring # Only create on certain stages.
+  count = var.enable_monitoring ? 1 : 0 # Only create on certain stages.
 
   alarm_description   = "${var.stage} ${var.name} Lambda Errors"
   alarm_name          = "${var.stage}_${var.name}_lambda_errors"

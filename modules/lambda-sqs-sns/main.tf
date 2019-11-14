@@ -86,7 +86,7 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
 
 # CloudWatch Alarm
 resource "aws_cloudwatch_metric_alarm" "dlq_queue_size" {
-  count = var.enable_monitoring # Only create on certain stages.
+  count = var.enable_monitoring ? 1 : 0 # Only create on certain stages.
 
   alarm_description   = "${var.stage}_${var.name} Dead Letter Queue size"
   alarm_name          = "${var.stage}_${var.name}_dead_letter_queue_size"

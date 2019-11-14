@@ -9,8 +9,8 @@ variable "ok_actions" {
 }
 
 variable "enable_monitoring" {
-  type    = string
-  default = 0
+  type    = bool
+  default = false
 }
 
 variable "env_variables" {
@@ -105,6 +105,9 @@ variable "layers" {
 }
 
 variable "vpc_config" {
-  type    = map
+  type = object({
+    security_group_ids = list(string)
+    subnet_ids         = list(string)
+  })
   default = null
 }

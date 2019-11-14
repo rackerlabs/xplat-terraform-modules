@@ -84,7 +84,7 @@ resource "aws_api_gateway_deployment" "stage" {
 }
 
 data "aws_acm_certificate" "ssl_cert" {
-  count = var.enable_custom_domain
+  count = var.enable_custom_domain ? 1 : 0
 
   provider    = aws.us-east-1 # Set the us-east-1 provider from above.
   domain      = var.ssl_domain
@@ -93,13 +93,13 @@ data "aws_acm_certificate" "ssl_cert" {
 }
 
 resource "aws_api_gateway_domain_name" "domain" {
-  count           = var.enable_custom_domain
+  count           = var.enable_custom_domain ? 1 : 0
   domain_name     = lower(var.custom_domain)
   certificate_arn = data.aws_acm_certificate.ssl_cert[0].arn
 }
 
 resource "aws_api_gateway_base_path_mapping" "basepath" {
-  count = var.enable_custom_domain
+  count = var.enable_custom_domain ? 1 : 0
 
   api_id      = aws_api_gateway_rest_api.api.id
   stage_name  = aws_api_gateway_deployment.stage.stage_name
@@ -108,12 +108,12 @@ resource "aws_api_gateway_base_path_mapping" "basepath" {
 }
 
 data "aws_route53_zone" "domain" {
-  count = var.enable_custom_domain
+  count = var.enable_custom_domain ? 1 : 0
   name  = var.zone_name
 }
 
 resource "aws_route53_record" "custom_domain_record" {
-  count   = var.enable_custom_domain
+  count   = var.enable_custom_domain ? 1 : 0
   zone_id = data.aws_route53_zone.domain[0].zone_id
   name    = lower(var.custom_domain)
   type    = "A"
@@ -127,7 +127,7 @@ resource "aws_route53_record" "custom_domain_record" {
 
 resource "aws_cloudwatch_metric_alarm" "api_5XX" {
   alarm_name                = "${var.stage}_${var.name}_5XX"
-  count                     = var.enable_monitoring # Only create on certain stages.
+  count                     = var.enable_monitoring ? 1 : 0 # Only create on certain stages.
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = "2"
   metric_name               = "5XXError"
@@ -148,7 +148,7 @@ resource "aws_cloudwatch_metric_alarm" "api_5XX" {
 
 resource "aws_cloudwatch_metric_alarm" "api_4XX" {
   alarm_name                = "${var.stage}_${var.name}_4XX"
-  count                     = var.enable_monitoring # Only create on certain stages.
+  count                     = var.enable_monitoring ? 1 : 0 # Only create on certain stages.
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = "2"
   metric_name               = "4XXError"

@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_event_rule" "event_rule" {
-  count = var.trigger_enabled
+  count = var.trigger_enabled ? 1 : 0
 
   name                = var.event_name
   description         = var.event_description
@@ -7,7 +7,7 @@ resource "aws_cloudwatch_event_rule" "event_rule" {
 }
 
 resource "aws_cloudwatch_event_target" "schedule_to_lambda" {
-  count = var.trigger_enabled
+  count = var.trigger_enabled ? 1 : 0
 
   rule      = aws_cloudwatch_event_rule.event_rule[0].name
   target_id = "${aws_cloudwatch_event_rule.event_rule[0].name}_target"
@@ -16,7 +16,7 @@ resource "aws_cloudwatch_event_target" "schedule_to_lambda" {
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch" {
-  count = var.trigger_enabled
+  count = var.trigger_enabled ? 1 : 0
 
   statement_id_prefix = "AllowExecutionFromCloudWatch"
   action              = "lambda:InvokeFunction"

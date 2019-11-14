@@ -12,7 +12,7 @@ provider "aws" {
 resource "aws_wafregional_ipset" "iplist_throttle" {
   name = "${var.stage}_${var.region}_${var.api_name}_iplist_throttle"
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 
   ip_set_descriptor {
     type  = "IPV4"
@@ -28,8 +28,8 @@ resource "aws_wafregional_ipset" "iplist_throttle" {
 resource "aws_wafregional_ipset" "iplist_blacklist" {
   name = "${var.stage}_${var.region}_${var.api_name}_iplist_blacklist"
 
-  count = var.enabled
-  # RULE in place. Use UI in an emergency to add new IP sets. Clean up terraform if IP block becomes 
+  count = var.enabled ? 1 : 0
+  # RULE in place. Use UI in an emergency to add new IP sets. Clean up terraform if IP block becomes
   # permanent.
   #ip_set_descriptor {
   #    type = "IPV4"
@@ -43,7 +43,7 @@ resource "aws_wafregional_ipset" "iplist_blacklist" {
 resource "aws_wafregional_xss_match_set" "xss_match_conditions" {
   name = "${var.stage}_${var.region}_${var.api_name}_xss_match_conditions"
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 
   xss_match_tuple {
     text_transformation = "URL_DECODE"
@@ -118,7 +118,7 @@ resource "aws_wafregional_xss_match_set" "xss_match_conditions" {
 resource "aws_wafregional_sql_injection_match_set" "sql_injection_match_set" {
   name = "${var.stage}_${var.region}_${var.api_name}_sql_injection_match_set"
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 
   sql_injection_match_tuple {
     text_transformation = "URL_DECODE"
@@ -195,7 +195,7 @@ resource "aws_wafregional_sql_injection_match_set" "sql_injection_match_set" {
 resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
   name = "${var.stage}_${var.region}_${var.api_name}__byte_match_set"
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 
   byte_match_tuples {
     text_transformation   = "URL_DECODE"
@@ -285,7 +285,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
 resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
   name = "${var.stage}_${var.region}_${var.api_name}__byte_match_webroot_requests"
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 
   byte_match_tuples {
     text_transformation   = "LOWERCASE"
@@ -397,7 +397,7 @@ resource "aws_wafregional_rule" "ip_blacklist" {
     negated = false
   }
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 }
 
 resource "aws_wafregional_rate_based_rule" "rate_ip_throttle" {
@@ -417,7 +417,7 @@ resource "aws_wafregional_rate_based_rule" "rate_ip_throttle" {
 
   depends_on = [aws_wafregional_ipset.iplist_throttle]
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 }
 
 ## OWASP Top 10 A3
@@ -437,7 +437,7 @@ resource "aws_wafregional_rule" "xss_match_rule" {
 
   depends_on = [aws_wafregional_xss_match_set.xss_match_conditions]
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 }
 
 # OWASP Top 10 A1
@@ -458,7 +458,7 @@ resource "aws_wafregional_rule" "sql_injection_rule" {
 
   depends_on = [aws_wafregional_sql_injection_match_set.sql_injection_match_set]
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 }
 
 ## OWASP Top 10 A4
@@ -480,7 +480,7 @@ resource "aws_wafregional_rule" "byte_match_traversal" {
 
   depends_on = [aws_wafregional_byte_match_set.byte_set_traversal]
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 }
 
 ## 9.
@@ -501,7 +501,7 @@ resource "aws_wafregional_rule" "byte_match_webroot" {
 
   depends_on = [aws_wafregional_byte_match_set.byte_set_webroot_requests]
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 }
 
 # Web ACLs
@@ -523,7 +523,7 @@ resource "aws_wafregional_web_acl" "rms_web_acl" {
     type = var.web_acl_default_action
   }
 
-  count = var.enabled
+  count = var.enabled ? 1 : 0
 
   rule {
     action {
@@ -585,6 +585,6 @@ resource "aws_wafregional_web_acl" "rms_web_acl" {
 resource "aws_wafregional_web_acl_association" "web_acl_association" {
   resource_arn = var.acl_association_resource_arn
   web_acl_id   = aws_wafregional_web_acl.rms_web_acl[0].id
-  count        = var.enabled
+  count        = var.enabled ? 1 : 0
 }
 

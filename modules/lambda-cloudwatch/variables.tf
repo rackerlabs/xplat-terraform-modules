@@ -1,6 +1,6 @@
 variable "trigger_enabled" {
-  type    = string
-  default = "0"
+  type    = bool
+  default = false
 }
 
 variable "event_name" {

@@ -44,13 +44,13 @@ variable "custom_domain" {
 }
 
 variable "enable_custom_domain" {
-  type    = string
-  default = 0
+  type    = bool
+  default = false
 }
 
 variable "enable_monitoring" {
-  type    = string
-  default = 0
+  type    = bool
+  default = false
 }
 
 variable "lambda_arn" {
