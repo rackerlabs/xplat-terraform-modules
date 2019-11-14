@@ -49,13 +49,12 @@ resource "aws_lambda_function" "lambda" {
   filename                       = var.file
   s3_bucket                      = var.s3_bucket
   s3_key                         = var.s3_key
-  source_code_hash               = var.source_code_hash
+  source_code_hash               = var.source_code_hash || filebase64sha256(var.file)
   role                           = aws_iam_role.execution_lambda_role.arn
   handler                        = var.handler
   memory_size                    = var.memory_size
   timeout                        = var.timeout
   publish                        = var.publish
-  source_code_hash               = filebase64sha256(var.file)
   runtime                        = var.runtime
   description                    = "${var.description} (stage: ${var.stage})"
   kms_key_arn                    = var.kms_key_arn
@@ -70,6 +69,8 @@ resource "aws_lambda_function" "lambda" {
   environment {
     variables = var.env_variables
   }
+
+  vpc_config = var.vpc_config
 }
 
 # Temporary work-around for https://github.com/terraform-providers/terraform-provider-aws/issues/626 -

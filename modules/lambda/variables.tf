@@ -104,3 +104,7 @@ variable "layers" {
   default = []
 }
 
+variable "vpc_config" {
+  type    = map
+  default = null
+}
