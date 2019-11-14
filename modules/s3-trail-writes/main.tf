@@ -1,11 +1,11 @@
 resource "aws_s3_bucket" "content_bucket" {
-  bucket = "${var.bucket_name}"
+  bucket = var.bucket_name
   acl    = "private"
 
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        sse_algorithm = "${var.encryption}"
+        sse_algorithm = var.encryption
       }
     }
   }
@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "content_bucket" {
 
 resource "aws_cloudtrail" "bucket_trail" {
   name                          = "${var.bucket_name}-writes"
-  s3_bucket_name                = "${aws_s3_bucket.bucket_for_trail.id}"
+  s3_bucket_name                = aws_s3_bucket.bucket_for_trail.id
   include_global_service_events = false
 
   event_selector {
@@ -61,4 +61,6 @@ resource "aws_s3_bucket" "bucket_for_trail" {
     ]
 }
 POLICY
+
 }
+

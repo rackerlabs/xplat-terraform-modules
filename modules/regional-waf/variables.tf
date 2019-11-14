@@ -1,24 +1,28 @@
 variable "stage" {
-    type    = "string"
-    default = ""
+  type    = string
+  default = ""
 }
+
 variable "region" {
-    type    = "string"
-    default = ""
+  type    = string
+  default = ""
 }
+
 variable "acl_association_resource_arn" {
-    type    = "string"
-    default = ""
+  type    = string
+  default = ""
 }
+
 variable "api_name" {
-    type    = "string"
-    default = ""
+  type    = string
+  default = ""
 }
+
 # Valid values are BLOCK or ALLOW
 # The correct setting is almost always ALLOW.
 variable "web_acl_default_action" {
-    type    = "string"
-    default = "ALLOW"
+  type    = string
+  default = "ALLOW"
 }
 
 # Valid values are BLOCK, ALLOW, COUNT.
@@ -27,46 +31,46 @@ variable "web_acl_default_action" {
 # is an intentional decision. 
 
 variable "ip_blacklist_default_action" {
-    type    = "string"
-    default = "COUNT"
+  type    = string
+  default = "COUNT"
 }
 
 variable "rate_ip_throttle_default_action" {
-    type    = "string"
-    default = "COUNT"
+  type    = string
+  default = "COUNT"
 }
 
 variable "xss_match_rule_default_action" {
-    type    = "string"
-    default = "COUNT"
+  type    = string
+  default = "COUNT"
 }
 
 variable "byte_match_traversal_default_action" {
-    type    = "string"
-    default = "COUNT"
+  type    = string
+  default = "COUNT"
 }
 
 variable "byte_match_webroot_default_action" {
-    type    = "string"
-    default = "COUNT"
+  type    = string
+  default = "COUNT"
 }
 
 variable "sql_injection_default_action" {
-    type    = "string"
-    default = "COUNT"
+  type    = string
+  default = "COUNT"
 }
 
 # rate throttle IP Range(s)
 # Must be in CIDR format
 variable "iplist_throttle_CIDR_0" {
-    type = "string"
-    default = "0.0.0.0/32"
+  type    = string
+  default = "0.0.0.0/32"
 }
 
 # Requests per 5 Minutes.
 variable "rate_ip_throttle_limit" {
-    type    = "string"
-    default = 5000
+  type    = string
+  default = 5000
 }
 
 # Because COUNT still does not exist for modules.
@@ -85,7 +89,7 @@ variable "rate_ip_throttle_limit" {
 # is an intentional decision.
 
 variable "enabled" {
-    type = "string"
-    default = 0
+  type    = string
+  default = 0
 }
 

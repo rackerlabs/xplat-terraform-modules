@@ -1,8 +1,9 @@
 variable "bucket_name" {
-  type = "string"
+  type = string
 }
 
 variable "encryption" {
-  type    = "string"
+  type    = string
   default = "AES256"
 }
+

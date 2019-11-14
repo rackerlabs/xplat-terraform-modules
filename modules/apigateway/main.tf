@@ -34,30 +34,30 @@ data "aws_iam_policy_document" "lambda_invoke" {
 # Create role for API Gateway to use to invoke Lambda
 resource "aws_iam_role" "api_gateway_invoker" {
   name               = "${var.stage}_${var.name}_APIGatewayInvoker"
-  assume_role_policy = "${data.aws_iam_policy_document.api_gateway_invoker.json}"
+  assume_role_policy = data.aws_iam_policy_document.api_gateway_invoker.json
 }
 
 # Attach Lambda invoke policy to API Gateway Role
 resource "aws_iam_role_policy" "lambda_invoke_policy" {
   name   = "${var.stage}_${var.name}_lambda_invoke"
-  role   = "${aws_iam_role.api_gateway_invoker.id}"
-  policy = "${data.aws_iam_policy_document.lambda_invoke.json}"
+  role   = aws_iam_role.api_gateway_invoker.id
+  policy = data.aws_iam_policy_document.lambda_invoke.json
 }
 
 data "template_file" "swagger_file" {
-  template = "${var.swagger_template}"
+  template = var.swagger_template
 
-  vars {
-    authorizer_type            = "${var.authorizer_type}"
-    authorizer_arn             = "${var.authorizer_arn}"
-    authorizer_header          = "${var.authorizer_header}"
-    authorizer_role            = "${aws_iam_role.api_gateway_invoker.arn}"
-    authorizer_expression      = "${var.authorizer_expression}"
-    authorizer_identity_source = "${var.authorizer_identity_source}"
-    authorizer_ttl             = "${var.authorizer_ttl}"
-    lambda_arn                 = "${var.lambda_arn}"
-    lambda_role                = "${aws_iam_role.api_gateway_invoker.arn}"
-    stage                      = "${var.stage != "prod" ? format("%s-", var.stage) : ""}"
+  vars = {
+    authorizer_type            = var.authorizer_type
+    authorizer_arn             = var.authorizer_arn
+    authorizer_header          = var.authorizer_header
+    authorizer_role            = aws_iam_role.api_gateway_invoker.arn
+    authorizer_expression      = var.authorizer_expression
+    authorizer_identity_source = var.authorizer_identity_source
+    authorizer_ttl             = var.authorizer_ttl
+    lambda_arn                 = var.lambda_arn
+    lambda_role                = aws_iam_role.api_gateway_invoker.arn
+    stage                      = var.stage != "prod" ? format("%s-", var.stage) : ""
     api_name                   = "${var.stage}_${var.name}"
     description                = "${var.description} (stage: ${var.stage})"
   }
@@ -65,17 +65,17 @@ data "template_file" "swagger_file" {
 
 resource "aws_api_gateway_rest_api" "api" {
   name               = "${var.stage}_${var.name}"
-  body               = "${data.template_file.swagger_file.rendered}"
+  body               = data.template_file.swagger_file.rendered
   description        = "${var.description} (stage: ${var.stage})"
-  binary_media_types = ["${var.binary_media_types}"]
+  binary_media_types = var.binary_media_types
 }
 
 resource "aws_api_gateway_deployment" "stage" {
-  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
-  stage_name  = "${var.stage}"
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  stage_name  = var.stage
 
   variables = {
-    "version" = "${md5(data.template_file.swagger_file.rendered)}"
+    "version" = md5(data.template_file.swagger_file.rendered)
   }
 
   lifecycle {
@@ -84,50 +84,50 @@ resource "aws_api_gateway_deployment" "stage" {
 }
 
 data "aws_acm_certificate" "ssl_cert" {
-  count = "${var.enable_custom_domain}"
+  count = var.enable_custom_domain
 
-  provider    = "aws.us-east-1"     # Set the us-east-1 provider from above.
-  domain      = "${var.ssl_domain}"
+  provider    = aws.us-east-1 # Set the us-east-1 provider from above.
+  domain      = var.ssl_domain
   statuses    = ["ISSUED"]
   most_recent = true
 }
 
 resource "aws_api_gateway_domain_name" "domain" {
-  count           = "${var.enable_custom_domain}"
-  domain_name     = "${lower(var.custom_domain)}"
-  certificate_arn = "${data.aws_acm_certificate.ssl_cert.arn}"
+  count           = var.enable_custom_domain
+  domain_name     = lower(var.custom_domain)
+  certificate_arn = data.aws_acm_certificate.ssl_cert[0].arn
 }
 
 resource "aws_api_gateway_base_path_mapping" "basepath" {
-  count = "${var.enable_custom_domain}"
+  count = var.enable_custom_domain
 
-  api_id      = "${aws_api_gateway_rest_api.api.id}"
-  stage_name  = "${aws_api_gateway_deployment.stage.stage_name}"
-  domain_name = "${aws_api_gateway_domain_name.domain.domain_name}"
-  base_path   = "${var.base_path}"
+  api_id      = aws_api_gateway_rest_api.api.id
+  stage_name  = aws_api_gateway_deployment.stage.stage_name
+  domain_name = aws_api_gateway_domain_name.domain[0].domain_name
+  base_path   = var.base_path
 }
 
 data "aws_route53_zone" "domain" {
-  count = "${var.enable_custom_domain}"
-  name  = "${var.zone_name}"
+  count = var.enable_custom_domain
+  name  = var.zone_name
 }
 
 resource "aws_route53_record" "custom_domain_record" {
-  count   = "${var.enable_custom_domain}"
-  zone_id = "${data.aws_route53_zone.domain.zone_id}"
-  name    = "${lower(var.custom_domain)}"
+  count   = var.enable_custom_domain
+  zone_id = data.aws_route53_zone.domain[0].zone_id
+  name    = lower(var.custom_domain)
   type    = "A"
 
   alias {
-    name                   = "${aws_api_gateway_domain_name.domain.cloudfront_domain_name}"
-    zone_id                = "${aws_api_gateway_domain_name.domain.cloudfront_zone_id}"
-    evaluate_target_health = false                                                          # You cannot set this to true for Cloudfront targets.
+    name                   = aws_api_gateway_domain_name.domain[0].cloudfront_domain_name
+    zone_id                = aws_api_gateway_domain_name.domain[0].cloudfront_zone_id
+    evaluate_target_health = false # You cannot set this to true for Cloudfront targets.
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "api_5XX" {
   alarm_name                = "${var.stage}_${var.name}_5XX"
-  count                     = "${var.enable_monitoring}"            # Only create on certain stages.
+  count                     = var.enable_monitoring # Only create on certain stages.
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = "2"
   metric_name               = "5XXError"
@@ -138,17 +138,17 @@ resource "aws_cloudwatch_metric_alarm" "api_5XX" {
   alarm_description         = "${var.stage} ${var.name} 5XX Errors"
   insufficient_data_actions = []
 
-  dimensions {
+  dimensions = {
     ApiName = "${var.stage}_${var.name}"
-    Stage   = "${var.stage}"
+    Stage   = var.stage
   }
 
-  alarm_actions = ["${var.alarm_actions}"]
+  alarm_actions = var.alarm_actions
 }
 
 resource "aws_cloudwatch_metric_alarm" "api_4XX" {
   alarm_name                = "${var.stage}_${var.name}_4XX"
-  count                     = "${var.enable_monitoring}"            # Only create on certain stages.
+  count                     = var.enable_monitoring # Only create on certain stages.
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = "2"
   metric_name               = "4XXError"
@@ -159,10 +159,11 @@ resource "aws_cloudwatch_metric_alarm" "api_4XX" {
   alarm_description         = "${var.stage} ${var.name} 4XX Errors"
   insufficient_data_actions = []
 
-  dimensions {
+  dimensions = {
     ApiName = "${var.stage}_${var.name}"
-    Stage   = "${var.stage}"
+    Stage   = var.stage
   }
 
-  alarm_actions = ["${var.alarm_actions}"]
+  alarm_actions = var.alarm_actions
 }
+

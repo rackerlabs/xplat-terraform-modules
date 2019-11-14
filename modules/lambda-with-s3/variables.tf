@@ -1,88 +1,95 @@
 variable "alarm_actions" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
 
 variable "ok_actions" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
 
 variable "enable_monitoring" {
-  type    = "string"
+  type    = string
   default = 0
 }
 
 variable "env_variables" {
-  type    = "map"
+  type    = map(string)
   default = {}
 }
 
-variable "source_code_hash" {}
+variable "source_code_hash" {
+}
 
-variable "s3_bucket" {}
-variable "s3_key" {}
+variable "s3_bucket" {
+}
+
+variable "s3_key" {
+}
 
 variable "handler" {
-  type    = "string"
+  type    = string
   default = "handler.lambda_handler"
 }
 
 variable "memory_size" {
-  type    = "string"
+  type    = string
   default = 256
 }
 
-variable "name" {}
+variable "name" {
+}
 
 variable "publish" {
-  type    = "string"
+  type    = string
   default = true
 }
 
-variable "stage" {}
+variable "stage" {
+}
 
 variable "runtime" {
-  type    = "string"
+  type    = string
   default = "python3.6"
 }
 
 variable "timeout" {
-  type    = "string"
+  type    = string
   default = 60
 }
 
 variable "description" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "kms_key_arn" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "tracing_mode" {
-  type    = "string"
+  type    = string
   default = "PassThrough"
 }
 
 variable "tags" {
-  type    = "map"
+  type    = map(string)
   default = {}
 }
 
 variable "reserved_concurrent_executions" {
-  type    = "string"
+  type    = string
   default = "-1"
 }
 
 variable "throttle_threshold" {
-  type    = "string"
+  type    = string
   default = "1"
 }
 
 variable "layers" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
+

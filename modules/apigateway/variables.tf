@@ -1,84 +1,89 @@
 variable "alarm_actions" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
 
 variable "authorizer_arn" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "authorizer_header" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "authorizer_expression" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "authorizer_identity_source" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "authorizer_ttl" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "authorizer_type" {
-  type    = "string"
+  type    = string
   default = "token"
 }
 
 variable "base_path" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "custom_domain" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "enable_custom_domain" {
-  type    = "string"
+  type    = string
   default = 0
 }
 
 variable "enable_monitoring" {
-  type    = "string"
+  type    = string
   default = 0
 }
 
 variable "lambda_arn" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
-variable "name" {}
+variable "name" {
+}
 
 variable "ssl_domain" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
-variable "stage" {}
-variable "swagger_template" {}
+variable "stage" {
+}
+
+variable "swagger_template" {
+}
 
 variable "zone_name" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "description" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "binary_media_types" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
+

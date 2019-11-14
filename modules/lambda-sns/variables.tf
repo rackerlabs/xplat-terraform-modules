@@ -1,5 +1,8 @@
-variable "lambda_arn" {}
-variable "sns_arn" {}
+variable "lambda_arn" {
+}
+
+variable "sns_arn" {
+}
 
 variable "iam_role_name" {
   default = "iam_for_lambda_with_sns"
@@ -21,4 +24,6 @@ variable "assume_role_policy" {
 ]
 }
 EOF
+
 }
+

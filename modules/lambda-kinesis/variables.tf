@@ -1,6 +1,11 @@
-variable "lambda_arn" {}
-variable "lambda_role_name" {}
-variable "kinesis_arn" {}
+variable "lambda_arn" {
+}
+
+variable "lambda_role_name" {
+}
+
+variable "kinesis_arn" {
+}
 
 variable "iam_role_name" {
   default = "iam_for_lambda_with_kinesis"
@@ -11,7 +16,7 @@ variable "stream_starting_position" {
 }
 
 variable "kinesis_actions" {
-  type = "list"
+  type = list(string)
 
   default = [
     "kinesis:DescribeStream",
@@ -21,3 +26,4 @@ variable "kinesis_actions" {
     "kinesis:PutRecords",
   ]
 }
+

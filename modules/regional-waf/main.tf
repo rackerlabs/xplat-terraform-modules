@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "${var.region}"
+  region = var.region
 }
 
 # for a WAF we specify the conditions -> assign the descriptor to a aws_waf_rule -> assign the rule to a aws_waf_web_acl.
@@ -10,14 +10,14 @@ provider "aws" {
 # Mostly taken from https://s3.us-east-2.amazonaws.com/awswaf-owasp/owasp_10_base.yml
 
 resource "aws_wafregional_ipset" "iplist_throttle" {
-    name  = "${var.stage}_${var.region}_${var.api_name}_iplist_throttle"
+  name = "${var.stage}_${var.region}_${var.api_name}_iplist_throttle"
 
-    count = "${var.enabled}"
+  count = var.enabled
 
-    ip_set_descriptor {
-        type  = "IPV4"
-        value = "${var.iplist_throttle_CIDR_0}"
-    }
+  ip_set_descriptor {
+    type  = "IPV4"
+    value = var.iplist_throttle_CIDR_0
+  }
 }
 
 ## 10.
@@ -26,29 +26,26 @@ resource "aws_wafregional_ipset" "iplist_throttle" {
 ## Matches IP addresses that should not be allowed to access content
 
 resource "aws_wafregional_ipset" "iplist_blacklist" {
-    name  = "${var.stage}_${var.region}_${var.api_name}_iplist_blacklist"
+  name = "${var.stage}_${var.region}_${var.api_name}_iplist_blacklist"
 
-    count = "${var.enabled}"
-
-# RULE in place. Use UI in an emergency to add new IP sets. Clean up terraform if IP block becomes 
-# permanent.
-    #ip_set_descriptor {
-    #    type = "IPV4"
-    #    value = ""
-    #}
+  count = var.enabled
+  # RULE in place. Use UI in an emergency to add new IP sets. Clean up terraform if IP block becomes 
+  # permanent.
+  #ip_set_descriptor {
+  #    type = "IPV4"
+  #    value = ""
+  #}
 }
-
-
 
 ## OWASP Top 10 A3
 ## Mitigate Cross Site Scripting Attacks
 ## Matches attempted XSS patterns in the URI, QUERY_STRING, BODY, COOKIES
 resource "aws_wafregional_xss_match_set" "xss_match_conditions" {
-    name  = "${var.stage}_${var.region}_${var.api_name}_xss_match_conditions"
+  name = "${var.stage}_${var.region}_${var.api_name}_xss_match_conditions"
 
-    count = "${var.enabled}"
+  count = var.enabled
 
-    xss_match_tuple {
+  xss_match_tuple {
     text_transformation = "URL_DECODE"
 
     field_to_match {
@@ -72,7 +69,7 @@ resource "aws_wafregional_xss_match_set" "xss_match_conditions" {
     }
   }
 
-    xss_match_tuple {
+  xss_match_tuple {
     text_transformation = "HTML_ENTITY_DECODE"
 
     field_to_match {
@@ -80,7 +77,7 @@ resource "aws_wafregional_xss_match_set" "xss_match_conditions" {
     }
   }
 
-      xss_match_tuple {
+  xss_match_tuple {
     text_transformation = "URL_DECODE"
 
     field_to_match {
@@ -88,7 +85,7 @@ resource "aws_wafregional_xss_match_set" "xss_match_conditions" {
     }
   }
 
-        xss_match_tuple {
+  xss_match_tuple {
     text_transformation = "HTML_ENTITY_DECODE"
 
     field_to_match {
@@ -96,7 +93,7 @@ resource "aws_wafregional_xss_match_set" "xss_match_conditions" {
     }
   }
 
-        xss_match_tuple {
+  xss_match_tuple {
     text_transformation = "HTML_ENTITY_DECODE"
 
     field_to_match {
@@ -105,7 +102,7 @@ resource "aws_wafregional_xss_match_set" "xss_match_conditions" {
     }
   }
 
-          xss_match_tuple {
+  xss_match_tuple {
     text_transformation = "URL_DECODE"
 
     field_to_match {
@@ -121,7 +118,7 @@ resource "aws_wafregional_xss_match_set" "xss_match_conditions" {
 resource "aws_wafregional_sql_injection_match_set" "sql_injection_match_set" {
   name = "${var.stage}_${var.region}_${var.api_name}_sql_injection_match_set"
 
-  count = "${var.enabled}"
+  count = var.enabled
 
   sql_injection_match_tuple {
     text_transformation = "URL_DECODE"
@@ -139,7 +136,7 @@ resource "aws_wafregional_sql_injection_match_set" "sql_injection_match_set" {
     }
   }
 
-    sql_injection_match_tuple {
+  sql_injection_match_tuple {
     text_transformation = "URL_DECODE"
 
     field_to_match {
@@ -147,7 +144,7 @@ resource "aws_wafregional_sql_injection_match_set" "sql_injection_match_set" {
     }
   }
 
-    sql_injection_match_tuple {
+  sql_injection_match_tuple {
     text_transformation = "HTML_ENTITY_DECODE"
 
     field_to_match {
@@ -155,7 +152,7 @@ resource "aws_wafregional_sql_injection_match_set" "sql_injection_match_set" {
     }
   }
 
-    sql_injection_match_tuple {
+  sql_injection_match_tuple {
     text_transformation = "URL_DECODE"
 
     field_to_match {
@@ -171,7 +168,7 @@ resource "aws_wafregional_sql_injection_match_set" "sql_injection_match_set" {
     }
   }
 
-    sql_injection_match_tuple {
+  sql_injection_match_tuple {
     text_transformation = "URL_DECODE"
 
     field_to_match {
@@ -180,7 +177,7 @@ resource "aws_wafregional_sql_injection_match_set" "sql_injection_match_set" {
     }
   }
 
-    sql_injection_match_tuple {
+  sql_injection_match_tuple {
     text_transformation = "HTML_ENTITY_DECODE"
 
     field_to_match {
@@ -188,8 +185,6 @@ resource "aws_wafregional_sql_injection_match_set" "sql_injection_match_set" {
       data = "cookie"
     }
   }
-
-
 }
 
 ## OWASP Top 10 A4
@@ -198,9 +193,9 @@ resource "aws_wafregional_sql_injection_match_set" "sql_injection_match_set" {
 ## local or remote files
 
 resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
-  name  = "${var.stage}_${var.region}_${var.api_name}__byte_match_set"
+  name = "${var.stage}_${var.region}_${var.api_name}__byte_match_set"
 
-  count = "${var.enabled}"
+  count = var.enabled
 
   byte_match_tuples {
     text_transformation   = "URL_DECODE"
@@ -212,7 +207,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "HTML_ENTITY_DECODE"
     target_string         = "../"
     positional_constraint = "CONTAINS"
@@ -222,7 +217,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "URL_DECODE"
     target_string         = "../"
     positional_constraint = "CONTAINS"
@@ -232,7 +227,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "HTML_ENTITY_DECODE"
     target_string         = "../"
     positional_constraint = "CONTAINS"
@@ -242,7 +237,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "URL_DECODE"
     target_string         = "://"
     positional_constraint = "CONTAINS"
@@ -252,7 +247,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "HTML_ENTITY_DECODE"
     target_string         = "://"
     positional_constraint = "CONTAINS"
@@ -262,7 +257,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "URL_DECODE"
     target_string         = "://"
     positional_constraint = "CONTAINS"
@@ -272,7 +267,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "HTML_ENTITY_DECODE"
     target_string         = "://"
     positional_constraint = "CONTAINS"
@@ -281,7 +276,6 @@ resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
       type = "QUERY_STRING"
     }
   }
-
 }
 
 ## 9.
@@ -289,11 +283,11 @@ resource "aws_wafregional_byte_match_set" "byte_set_traversal" {
 ## Server-side includes & libraries in webroot
 ## Matches request patterns for webroot objects that shouldn't be directly accessible
 resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
-    name  = "${var.stage}_${var.region}_${var.api_name}__byte_match_webroot_requests"
+  name = "${var.stage}_${var.region}_${var.api_name}__byte_match_webroot_requests"
 
-    count = "${var.enabled}"
+  count = var.enabled
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "LOWERCASE"
     target_string         = ".cfg"
     positional_constraint = "ENDS_WITH"
@@ -303,7 +297,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "LOWERCASE"
     target_string         = ".conf"
     positional_constraint = "ENDS_WITH"
@@ -313,7 +307,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "LOWERCASE"
     target_string         = ".config"
     positional_constraint = "ENDS_WITH"
@@ -323,7 +317,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "LOWERCASE"
     target_string         = ".ini"
     positional_constraint = "ENDS_WITH"
@@ -333,7 +327,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "LOWERCASE"
     target_string         = ".log"
     positional_constraint = "ENDS_WITH"
@@ -343,7 +337,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "LOWERCASE"
     target_string         = ".bak"
     positional_constraint = "ENDS_WITH"
@@ -353,7 +347,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "LOWERCASE"
     target_string         = ".backup"
     positional_constraint = "ENDS_WITH"
@@ -363,7 +357,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "URL_DECODE"
     target_string         = "/includes"
     positional_constraint = "STARTS_WITH"
@@ -373,7 +367,7 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
     }
   }
 
-    byte_match_tuples {
+  byte_match_tuples {
     text_transformation   = "URL_DECODE"
     target_string         = "/admin"
     positional_constraint = "STARTS_WITH"
@@ -382,7 +376,6 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
       type = "URI"
     }
   }
-
 }
 
 # Rules
@@ -393,60 +386,58 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
 ## Matches IP addresses that should not be allowed to access content
 
 resource "aws_wafregional_rule" "ip_blacklist" {
+  name = "${var.stage}_${var.region}_${var.api_name}_ip_blacklist"
 
-    name        = "${var.stage}_${var.region}_${var.api_name}_ip_blacklist"
-    # metric_name is alpha numeric only.
-    metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}ipblacklist"
+  # metric_name is alpha numeric only.
+  metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}ipblacklist"
 
-    predicate {
-        type    = "IPMatch"
-        data_id = "${aws_wafregional_ipset.iplist_blacklist.id}"
-        negated = false
-    }
+  predicate {
+    type    = "IPMatch"
+    data_id = aws_wafregional_ipset.iplist_blacklist[0].id
+    negated = false
+  }
 
-    count       = "${var.enabled}"
+  count = var.enabled
 }
 
-
 resource "aws_wafregional_rate_based_rule" "rate_ip_throttle" {
+  name = "${var.stage}_${var.region}_${var.api_name}_ip_throttle"
 
-    name        = "${var.stage}_${var.region}_${var.api_name}_ip_throttle"
-    # metric_name is alpha numeric only.
-    metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}ipthrottle"
+  # metric_name is alpha numeric only.
+  metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}ipthrottle"
 
-    rate_key    = "IP"
-    rate_limit  = "${var.rate_ip_throttle_limit}"
+  rate_key   = "IP"
+  rate_limit = var.rate_ip_throttle_limit
 
-    predicate {
-        type    = "IPMatch"
-        data_id = "${aws_wafregional_ipset.iplist_throttle.id}"
-        negated = false
-    }
+  predicate {
+    type    = "IPMatch"
+    data_id = aws_wafregional_ipset.iplist_throttle[0].id
+    negated = false
+  }
 
-    depends_on = ["aws_wafregional_ipset.iplist_throttle"]
+  depends_on = [aws_wafregional_ipset.iplist_throttle]
 
-    count      = "${var.enabled}"
-
+  count = var.enabled
 }
 
 ## OWASP Top 10 A3
 ## Mitigate Cross Site Scripting Attacks
 ## Matches attempted XSS patterns in the URI, QUERY_STRING, BODY, COOKIES
 resource "aws_wafregional_rule" "xss_match_rule" {
-    name        = "${var.stage}_${var.region}_${var.api_name}_xss_match_rule"
-    # metric_name is alpha numeric only.
-    metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}xssmatchrule"
+  name = "${var.stage}_${var.region}_${var.api_name}_xss_match_rule"
 
-    predicate {
-        type    = "XssMatch"
-        data_id = "${aws_wafregional_xss_match_set.xss_match_conditions.id}"
-        negated = false
-    }
+  # metric_name is alpha numeric only.
+  metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}xssmatchrule"
 
-    depends_on = ["aws_wafregional_xss_match_set.xss_match_conditions"]
+  predicate {
+    type    = "XssMatch"
+    data_id = aws_wafregional_xss_match_set.xss_match_conditions[0].id
+    negated = false
+  }
 
-    count      = "${var.enabled}"
+  depends_on = [aws_wafregional_xss_match_set.xss_match_conditions]
 
+  count = var.enabled
 }
 
 # OWASP Top 10 A1
@@ -454,20 +445,20 @@ resource "aws_wafregional_rule" "xss_match_rule" {
 ## Matches attempted SQLi patterns in the URI, QUERY_STRING, BODY, COOKIES
 
 resource "aws_wafregional_rule" "sql_injection_rule" {
-    name        = "${var.stage}_${var.region}_${var.api_name}_sql_injection_rule"
-    # metric_name is alpha numeric only.
-    metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}sqlinjectionrule"
+  name = "${var.stage}_${var.region}_${var.api_name}_sql_injection_rule"
 
-    predicate {
-        type    = "SqlInjectionMatch"
-        data_id = "${aws_wafregional_sql_injection_match_set.sql_injection_match_set.id}"
-        negated = false
-    }
+  # metric_name is alpha numeric only.
+  metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}sqlinjectionrule"
 
-    depends_on = ["aws_wafregional_sql_injection_match_set.sql_injection_match_set"]
+  predicate {
+    type    = "SqlInjectionMatch"
+    data_id = aws_wafregional_sql_injection_match_set.sql_injection_match_set[0].id
+    negated = false
+  }
 
-    count      = "${var.enabled}"
+  depends_on = [aws_wafregional_sql_injection_match_set.sql_injection_match_set]
 
+  count = var.enabled
 }
 
 ## OWASP Top 10 A4
@@ -476,21 +467,20 @@ resource "aws_wafregional_rule" "sql_injection_rule" {
 ## local or remote files
 
 resource "aws_wafregional_rule" "byte_match_traversal" {
-  
-  name        = "${var.stage}_${var.region}_${var.api_name}_byte_match_traversal"
+  name = "${var.stage}_${var.region}_${var.api_name}_byte_match_traversal"
+
   # metric_name is alpha numeric only.
   metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}bytematchtraversalrule"
-  
+
   predicate {
-      type    = "ByteMatch"
-      data_id = "${aws_wafregional_byte_match_set.byte_set_traversal.id}"
-      negated = false
+    type    = "ByteMatch"
+    data_id = aws_wafregional_byte_match_set.byte_set_traversal[0].id
+    negated = false
   }
 
-    depends_on = ["aws_wafregional_byte_match_set.byte_set_traversal"]
+  depends_on = [aws_wafregional_byte_match_set.byte_set_traversal]
 
-    count      = "${var.enabled}"
-
+  count = var.enabled
 }
 
 ## 9.
@@ -498,104 +488,103 @@ resource "aws_wafregional_rule" "byte_match_traversal" {
 ## Server-side includes & libraries in webroot
 ## Matches request patterns for webroot objects that shouldn't be directly accessible
 resource "aws_wafregional_rule" "byte_match_webroot" {
-  
-  name        = "${var.stage}_${var.region}_${var.api_name}_byte_match_webroot"
+  name = "${var.stage}_${var.region}_${var.api_name}_byte_match_webroot"
+
   # metric_name is alpha numeric only.
   metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}bytematchwebrootrule"
 
   predicate {
-      type    = "ByteMatch"
-      data_id = "${aws_wafregional_byte_match_set.byte_set_webroot_requests.id}"
-      negated = false
+    type    = "ByteMatch"
+    data_id = aws_wafregional_byte_match_set.byte_set_webroot_requests[0].id
+    negated = false
   }
 
-    depends_on = ["aws_wafregional_byte_match_set.byte_set_webroot_requests"]
+  depends_on = [aws_wafregional_byte_match_set.byte_set_webroot_requests]
 
-    count      = "${var.enabled}"
-
+  count = var.enabled
 }
-
 
 # Web ACLs
 resource "aws_wafregional_web_acl" "rms_web_acl" {
-    name        = "${var.stage}_${var.region}_${var.api_name}_rms_web_acl"
-    # metric_name is alpha numeric only.
-    metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}rmswebacl"
-    depends_on  = [
-        "aws_wafregional_rate_based_rule.rate_ip_throttle",
-        "aws_wafregional_rule.ip_blacklist",
-        "aws_wafregional_rule.byte_match_traversal",
-        "aws_wafregional_rule.xss_match_rule",
-        "aws_wafregional_rule.byte_match_webroot",
-        "aws_wafregional_rule.sql_injection_rule"
-    ]
+  name = "${var.stage}_${var.region}_${var.api_name}_rms_web_acl"
 
-    default_action {
-       type = "${var.web_acl_default_action}"
-        }
-    
-    count = "${var.enabled}"
+  # metric_name is alpha numeric only.
+  metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}rmswebacl"
+  depends_on = [
+    aws_wafregional_rate_based_rule.rate_ip_throttle,
+    aws_wafregional_rule.ip_blacklist,
+    aws_wafregional_rule.byte_match_traversal,
+    aws_wafregional_rule.xss_match_rule,
+    aws_wafregional_rule.byte_match_webroot,
+    aws_wafregional_rule.sql_injection_rule,
+  ]
 
-    rule {
-        action {
-            type = "${var.ip_blacklist_default_action}"
-            }
-        priority  = 10
-        rule_id   = "${aws_wafregional_rule.ip_blacklist.id}"
-        type      = "REGULAR"
-    }
-    rule {
-        action {
-            type = "${var.rate_ip_throttle_default_action}"
-            }
-        priority  = 20
-        rule_id   = "${aws_wafregional_rate_based_rule.rate_ip_throttle.id}"
-        # Must be RATE_BASED, GROUP or REGULAR
-        # If you fail to declare this, the rule will not be applied to the ACL.
-        # https://docs.aws.amazon.com/waf/latest/APIReference/API_regional_UpdateWebACL.html
-        type = "RATE_BASED"
-    }
-    rule {
-        action {
-            type = "${var.xss_match_rule_default_action}"
-            }
-        priority  = 30
-        rule_id   = "${aws_wafregional_rule.xss_match_rule.id}"
-        type      = "REGULAR"
-    }
+  default_action {
+    type = var.web_acl_default_action
+  }
 
-        rule {
-        action {
-            type = "${var.byte_match_traversal_default_action}"
-            }
-        priority  = 40
-        rule_id   = "${aws_wafregional_rule.byte_match_traversal.id}"
-        type      = "REGULAR"
-    }
+  count = var.enabled
 
-        rule {
-        action {
-            type = "${var.byte_match_webroot_default_action}"
-            }
-        priority  = 50
-        rule_id   = "${aws_wafregional_rule.byte_match_webroot.id}"
-        type      = "REGULAR"
+  rule {
+    action {
+      type = var.ip_blacklist_default_action
     }
-
-        rule {
-        action {
-            type = "${var.sql_injection_default_action}"
-            }
-        priority  = 60
-        rule_id   = "${aws_wafregional_rule.sql_injection_rule.id}"
-        type      = "REGULAR"
+    priority = 10
+    rule_id  = aws_wafregional_rule.ip_blacklist[0].id
+    type     = "REGULAR"
+  }
+  rule {
+    action {
+      type = var.rate_ip_throttle_default_action
     }
+    priority = 20
+    rule_id  = aws_wafregional_rate_based_rule.rate_ip_throttle[0].id
 
+    # Must be RATE_BASED, GROUP or REGULAR
+    # If you fail to declare this, the rule will not be applied to the ACL.
+    # https://docs.aws.amazon.com/waf/latest/APIReference/API_regional_UpdateWebACL.html
+    type = "RATE_BASED"
+  }
+  rule {
+    action {
+      type = var.xss_match_rule_default_action
+    }
+    priority = 30
+    rule_id  = aws_wafregional_rule.xss_match_rule[0].id
+    type     = "REGULAR"
+  }
+
+  rule {
+    action {
+      type = var.byte_match_traversal_default_action
+    }
+    priority = 40
+    rule_id  = aws_wafregional_rule.byte_match_traversal[0].id
+    type     = "REGULAR"
+  }
+
+  rule {
+    action {
+      type = var.byte_match_webroot_default_action
+    }
+    priority = 50
+    rule_id  = aws_wafregional_rule.byte_match_webroot[0].id
+    type     = "REGULAR"
+  }
+
+  rule {
+    action {
+      type = var.sql_injection_default_action
+    }
+    priority = 60
+    rule_id  = aws_wafregional_rule.sql_injection_rule[0].id
+    type     = "REGULAR"
+  }
 }
-
 
 resource "aws_wafregional_web_acl_association" "web_acl_association" {
-    resource_arn  = "${var.acl_association_resource_arn}"
-    web_acl_id    = "${aws_wafregional_web_acl.rms_web_acl.id}"
-    count         = "${var.enabled}"
+  resource_arn = var.acl_association_resource_arn
+  web_acl_id   = aws_wafregional_web_acl.rms_web_acl[0].id
+  count        = var.enabled
 }
+
