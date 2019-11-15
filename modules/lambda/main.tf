@@ -8,7 +8,9 @@ locals {
   }]
 
   security_group_ids = var.vpc_config == null ? null : var.vpc_config.security_group_ids
-  subnet_ids = var.vpc_config == null ? null : var.vpc_config.subnet_ids
+  subnet_ids         = var.vpc_config == null ? null : var.vpc_config.subnet_ids
+
+
 }
 
 data "aws_iam_policy_document" "execution_lambda_policy" {
@@ -31,8 +33,17 @@ data "aws_iam_policy_document" "execution_lambda_policy" {
 # Base policy for Lambda to execute.
 data "aws_iam_policy_document" "base_lambda_policy" {
   statement {
-    actions = [
+    actions = var.vpc_config == null ? [
       "logs:*",
+      "lambda:InvokeFunction",
+      "xray:PutTraceSegments",
+      "xray:PutTelemetryRecords",
+      ] : [
+      "ec2:CreateNetworkInterface",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DeleteNetworkInterface",
+      "logs:*",
+      "lambda:InvokeFunction",
       "xray:PutTraceSegments",
       "xray:PutTelemetryRecords",
     ]
