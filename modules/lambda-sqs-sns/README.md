@@ -27,3 +27,5 @@ The SQS queue will instead consume messages from the SNS topic and then automati
 * `trigger_enabled` - The SQS->Lambda trigger can be turned off by setting this to `false` (default: `true`)
 
 * `batch_size` - Maximum number of messages a single Lambda invocation will process (default: `5`)
+
+* `alarm_threshold` - When this number of messages are visible in the DLQ, the alarm will be triggered (default: `1`)
