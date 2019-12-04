@@ -55,3 +55,8 @@ variable "batch_size" {
   type    = "string"
   default = 5
 }
+
+variable "alarm_threshold" {
+  type    = "string"
+  default = 1
+}
