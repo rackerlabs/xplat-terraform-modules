@@ -2,6 +2,12 @@
 # Base AssumeRole policy for Lambda execution.
 
 locals {
+  dead_letter_configs = var.dead_letter_config == null ? [] : [{
+    "target_arn" = var.dead_letter_config.target_arn
+  }]
+
+  dead_letter_configs_target_arn = var.dead_letter_config == null ? null : var.dead_letter_config.target_arn
+
   vpc_configs = var.vpc_config == null ? [] : [{
     "security_group_ids" = var.vpc_config.security_group_ids
     "subnet_ids"         = var.vpc_config.subnet_ids
@@ -97,6 +103,13 @@ resource "aws_lambda_function" "lambda" {
     content {
       security_group_ids = local.security_group_ids
       subnet_ids         = local.subnet_ids
+    }
+  }
+
+  dynamic "dead_letter_config" {
+    for_each = local.dead_letter_configs
+    content {
+      target_arn = local.dead_letter_configs_target_arn
     }
   }
 }
