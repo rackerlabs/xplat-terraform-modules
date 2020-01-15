@@ -104,6 +104,13 @@ variable "layers" {
   default = []
 }
 
+variable "dead_letter_config" {
+  type = object({
+    target_arn = string
+  })
+  default = null
+}
+
 variable "vpc_config" {
   type = object({
     security_group_ids = list(string)
