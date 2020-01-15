@@ -56,6 +56,16 @@ data "aws_iam_policy_document" "base_lambda_policy" {
 
     resources = ["*"]
   }
+
+  dynamic "statement" {
+    for_each = local.dead_letter_configs
+    content {
+      actions = ["sqs:SendMessage"]
+
+      resources = [local.dead_letter_configs_target_arn]
+    }
+  }
+
 }
 
 # Create Lambda role with AssumeRole policy.
