@@ -112,7 +112,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   threshold           = var.throttle_threshold
   treat_missing_data  = "notBreaching"
 
-  dimensions {
+  dimensions = {
     FunctionName = "${var.stage}_${var.name}"
     Resource     = "${var.stage}_${var.name}:${var.stage}"
   }
@@ -136,7 +136,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   threshold           = "1"
   treat_missing_data  = "notBreaching"
 
-  dimensions {
+  dimensions = {
     FunctionName = "${var.stage}_${var.name}"
     Resource     = "${var.stage}_${var.name}:${var.stage}"
   }
