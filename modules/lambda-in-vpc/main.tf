@@ -55,7 +55,7 @@ resource "aws_lambda_function" "lambda" {
   memory_size                    = var.memory_size
   timeout                        = var.timeout
   publish                        = var.publish
-  source_code_hash               = base64sha256(file(var.file))
+  source_code_hash               = var.source_code_hash != null ? var.source_code_hash : filebase64sha256(var.file)
   runtime                        = var.runtime
   description                    = "${var.description} (stage: ${var.stage})"
   kms_key_arn                    = var.kms_key_arn
