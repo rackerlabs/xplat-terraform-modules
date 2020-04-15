@@ -60,3 +60,6 @@ variable "batch_size" {
   default = 5
 }
 
+variable "alarm_threshold" {
+  default = 1
+}

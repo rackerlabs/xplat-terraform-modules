@@ -97,7 +97,7 @@ resource "aws_cloudwatch_metric_alarm" "dlq_queue_size" {
   metric_name         = "ApproximateNumberOfMessagesVisible"
   namespace           = "AWS/SQS"
   statistic           = "Sum"
-  threshold           = "1"
+  threshold           = var.alarm_threshold
   treat_missing_data  = "notBreaching"
 
   dimensions = {
