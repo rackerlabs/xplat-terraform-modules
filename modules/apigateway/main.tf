@@ -70,7 +70,12 @@ resource "aws_api_gateway_rest_api" "api" {
   binary_media_types = var.binary_media_types
 }
 
+# Older method that did not use a separate `aws_api_gateway_stage`
+# resource. This creates a deployment at the same time as the stage,
+# but the stage is kept in the state for the `aws_api_gateway_deployment`
+# resource.
 resource "aws_api_gateway_deployment" "stage" {
+  count       = var.enable_xray ? 0 : 1
   rest_api_id = aws_api_gateway_rest_api.api.id
   stage_name  = var.stage
 
@@ -81,6 +86,32 @@ resource "aws_api_gateway_deployment" "stage" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "aws_api_gateway_deployment" "stage_with_xray" {
+  count       = var.enable_xray ? 1 : 0
+  rest_api_id = aws_api_gateway_rest_api.api.id
+
+  variables = {
+    "version" = md5(data.template_file.swagger_file.rendered)
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# This is only used if xray is enabled. However, in order to use
+# the stage resource, ANY existing stage previously created with
+# `aws_api_gateway_deployment` has to be imported into the
+# state for the `aws_api_gateway_stage` resource.
+resource "aws_api_gateway_stage" "stage" {
+  count         = var.enable_xray ? 1 : 0
+  stage_name    = var.stage
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  deployment_id = aws_api_gateway_deployment.stage_with_xray[count.index].id
+
+  xray_tracing_enabled = var.enable_xray
 }
 
 data "aws_acm_certificate" "ssl_cert" {
@@ -102,7 +133,7 @@ resource "aws_api_gateway_base_path_mapping" "basepath" {
   count = var.enable_custom_domain ? 1 : 0
 
   api_id      = aws_api_gateway_rest_api.api.id
-  stage_name  = aws_api_gateway_deployment.stage.stage_name
+  stage_name  = var.stage
   domain_name = aws_api_gateway_domain_name.domain[0].domain_name
   base_path   = var.base_path
 }
@@ -166,4 +197,3 @@ resource "aws_cloudwatch_metric_alarm" "api_4XX" {
 
   alarm_actions = var.alarm_actions
 }
-
