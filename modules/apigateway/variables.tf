@@ -87,3 +87,7 @@ variable "binary_media_types" {
   default = []
 }
 
+variable "enable_xray" {
+  type    = bool
+  default = false
+}

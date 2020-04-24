@@ -71,8 +71,9 @@ resource "aws_api_gateway_rest_api" "api" {
 }
 
 resource "aws_api_gateway_deployment" "stage" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  stage_name  = var.stage
+  rest_api_id          = aws_api_gateway_rest_api.api.id
+  stage_name           = var.stage
+  xray_tracing_enabled = var.enable_xray
 
   variables = {
     "version" = md5(data.template_file.swagger_file.rendered)
@@ -166,4 +167,3 @@ resource "aws_cloudwatch_metric_alarm" "api_4XX" {
 
   alarm_actions = var.alarm_actions
 }
-
