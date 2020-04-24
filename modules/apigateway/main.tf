@@ -70,14 +70,9 @@ resource "aws_api_gateway_rest_api" "api" {
   binary_media_types = var.binary_media_types
 }
 
-# Older method that did not use a separate `aws_api_gateway_stage`
-# resource. This creates a deployment at the same time as the stage,
-# but the stage is kept in the state for the `aws_api_gateway_deployment`
-# resource.
 resource "aws_api_gateway_deployment" "stage" {
-  count       = var.enable_xray ? 0 : 1
   rest_api_id = aws_api_gateway_rest_api.api.id
-  stage_name  = var.stage
+  stage_name  = "default"
 
   variables = {
     "version" = md5(data.template_file.swagger_file.rendered)
@@ -88,28 +83,10 @@ resource "aws_api_gateway_deployment" "stage" {
   }
 }
 
-resource "aws_api_gateway_deployment" "stage_with_xray" {
-  count       = var.enable_xray ? 1 : 0
-  rest_api_id = aws_api_gateway_rest_api.api.id
-
-  variables = {
-    "version" = md5(data.template_file.swagger_file.rendered)
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# This is only used if xray is enabled. However, in order to use
-# the stage resource, ANY existing stage previously created with
-# `aws_api_gateway_deployment` has to be imported into the
-# state for the `aws_api_gateway_stage` resource.
 resource "aws_api_gateway_stage" "stage" {
-  count         = var.enable_xray ? 1 : 0
   stage_name    = var.stage
   rest_api_id   = aws_api_gateway_rest_api.api.id
-  deployment_id = aws_api_gateway_deployment.stage_with_xray[count.index].id
+  deployment_id = aws_api_gateway_deployment.stage.id
 
   xray_tracing_enabled = var.enable_xray
 }
