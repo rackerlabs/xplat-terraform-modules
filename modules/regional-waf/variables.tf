@@ -87,3 +87,7 @@ variable "enabled" {
   default = false
 }
 
+variable "xss_query_string_whitelist" {
+  type    = list
+  default = []
+}

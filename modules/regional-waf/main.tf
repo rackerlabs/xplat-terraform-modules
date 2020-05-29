@@ -378,6 +378,24 @@ resource "aws_wafregional_byte_match_set" "byte_set_webroot_requests" {
   }
 }
 
+# Allow query params with these strings 
+resource "aws_wafregional_byte_match_set" "xss_byte_set_query_whitelist" {
+  name = "${var.stage}_${var.region}_${var.api_name}_xss_byte_set_query_whitelist"
+
+  dynamic "byte_match_tuples" {
+    for_each = toset(var.xss_query_string_whitelist)
+    content {
+      text_transformation   = "LOWERCASE"
+      target_string         = each.value
+      positional_constraint = "CONTAINS"
+
+      field_to_match {
+        type = "QUERY_STRING"
+      }
+    }
+  }
+}
+
 # Rules
 
 ## 10.
@@ -435,7 +453,16 @@ resource "aws_wafregional_rule" "xss_match_rule" {
     negated = false
   }
 
-  depends_on = [aws_wafregional_xss_match_set.xss_match_conditions]
+  predicate {
+    type    = "ByteMatch"
+    data_id = aws_wafregional_byte_match_set.xss_byte_set_query_whitelist[0].id
+    negated = true
+  }
+
+  depends_on = [
+    aws_wafregional_xss_match_set.xss_match_conditions,
+    aws_wafregional_byte_match_set.byte_set_query_whitelist
+  ]
 
   count = var.enabled ? 1 : 0
 }
