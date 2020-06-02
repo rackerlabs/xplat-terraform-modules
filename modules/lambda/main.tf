@@ -183,7 +183,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   namespace           = "AWS/Lambda"
   period              = "60"
   statistic           = "Sum"
-  threshold           = "1"
+  threshold           = var.alarm_threshold
   treat_missing_data  = "notBreaching"
 
   dimensions = {

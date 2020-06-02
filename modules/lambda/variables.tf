@@ -99,6 +99,11 @@ variable "throttle_threshold" {
   default = "1"
 }
 
+variable "alarm_threshold" {
+  type    = string
+  default = "1"
+}
+
 variable "layers" {
   type    = list(string)
   default = []
