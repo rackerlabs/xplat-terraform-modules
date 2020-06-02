@@ -3,14 +3,14 @@
 
 locals {
   dead_letter_configs = var.dead_letter_config == null ? [] : [{
-    "target_arn" = var.dead_letter_config.target_arn
+    target_arn = var.dead_letter_config.target_arn
   }]
 
   dead_letter_configs_target_arn = var.dead_letter_config == null ? null : var.dead_letter_config.target_arn
 
   vpc_configs = var.vpc_config == null ? [] : [{
-    "security_group_ids" = var.vpc_config.security_group_ids
-    "subnet_ids"         = var.vpc_config.subnet_ids
+    security_group_ids = var.vpc_config.security_group_ids
+    subnet_ids         = var.vpc_config.subnet_ids
   }]
 
   security_group_ids = var.vpc_config == null ? null : var.vpc_config.security_group_ids
