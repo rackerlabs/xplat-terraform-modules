@@ -95,6 +95,7 @@ data "aws_acm_certificate" "ssl_cert" {
 resource "aws_api_gateway_domain_name" "domain" {
   count           = var.enable_custom_domain ? 1 : 0
   domain_name     = lower(var.custom_domain)
+  security_policy = "TLS_1_2"
   certificate_arn = data.aws_acm_certificate.ssl_cert[0].arn
 }
 
