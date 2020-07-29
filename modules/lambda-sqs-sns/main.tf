@@ -1,5 +1,10 @@
 # # Set up SQS --------------------------------------------------------------
 
+locals {
+  alarm_name = var.alarm_name == "" ? "${var.stage}_${var.name}_dead_letter_queue_size" : var.alarm_name
+  alarm_description = var.alarm_description == "" ? "${var.stage}_${var.name} Dead Letter Queue size" : var.alarm_description
+}
+
 # SQS dead letter queue
 resource "aws_sqs_queue" "dead_letter_queue" {
   name                       = "${var.stage}_${var.name}_dead_letter_queue"
@@ -88,8 +93,8 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
 resource "aws_cloudwatch_metric_alarm" "dlq_queue_size" {
   count = var.enable_monitoring ? 1 : 0 # Only create on certain stages.
 
-  alarm_description   = "${var.stage}_${var.name} Dead Letter Queue size"
-  alarm_name          = "${var.stage}_${var.name}_dead_letter_queue_size"
+  alarm_description   = local.alarm_description
+  alarm_name          = local.alarm_name
   comparison_operator = "GreaterThanOrEqualToThreshold"
   period              = "120"
   evaluation_periods  = "1"
