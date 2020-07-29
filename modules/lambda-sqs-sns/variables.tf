@@ -63,3 +63,13 @@ variable "batch_size" {
 variable "alarm_threshold" {
   default = 1
 }
+
+variable "alarm_name" {
+  type = string
+  default = ""
+}
+
+variable "alarm_description" {
+  type = string
+  default = ""
+}
