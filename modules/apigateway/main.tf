@@ -116,8 +116,6 @@ resource "aws_api_gateway_base_path_mapping" "basepath" {
 data "aws_route53_zone" "domain" {
   count = var.enable_custom_domain ? 1 : 0
   name  = var.zone_name
-
-  tags = var.tags
 }
 
 resource "aws_route53_record" "custom_domain_record" {
