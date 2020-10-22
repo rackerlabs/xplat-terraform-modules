@@ -68,6 +68,8 @@ resource "aws_api_gateway_rest_api" "api" {
   body               = data.template_file.swagger_file.rendered
   description        = "${var.description} (stage: ${var.stage})"
   binary_media_types = var.binary_media_types
+
+  tags = var.tags
 }
 
 resource "aws_api_gateway_deployment" "stage" {
@@ -90,12 +92,16 @@ data "aws_acm_certificate" "ssl_cert" {
   domain      = var.ssl_domain
   statuses    = ["ISSUED"]
   most_recent = true
+
+  tags = var.tags
 }
 
 resource "aws_api_gateway_domain_name" "domain" {
   count           = var.enable_custom_domain ? 1 : 0
   domain_name     = lower(var.custom_domain)
   certificate_arn = data.aws_acm_certificate.ssl_cert[0].arn
+
+  tags = var.tags
 }
 
 resource "aws_api_gateway_base_path_mapping" "basepath" {
@@ -110,6 +116,8 @@ resource "aws_api_gateway_base_path_mapping" "basepath" {
 data "aws_route53_zone" "domain" {
   count = var.enable_custom_domain ? 1 : 0
   name  = var.zone_name
+
+  tags = var.tags
 }
 
 resource "aws_route53_record" "custom_domain_record" {
@@ -144,6 +152,8 @@ resource "aws_cloudwatch_metric_alarm" "api_5XX" {
   }
 
   alarm_actions = var.alarm_actions
+
+  tags = var.tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "api_4XX" {
@@ -165,5 +175,7 @@ resource "aws_cloudwatch_metric_alarm" "api_4XX" {
   }
 
   alarm_actions = var.alarm_actions
+
+  tags = var.tags
 }
 
