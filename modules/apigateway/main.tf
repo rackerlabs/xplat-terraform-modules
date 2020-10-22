@@ -92,8 +92,6 @@ data "aws_acm_certificate" "ssl_cert" {
   domain      = var.ssl_domain
   statuses    = ["ISSUED"]
   most_recent = true
-
-  tags = var.tags
 }
 
 resource "aws_api_gateway_domain_name" "domain" {
