@@ -87,3 +87,7 @@ variable "binary_media_types" {
   default = []
 }
 
+variable "tags" {
+  type    = map(string)
+  default = {}
+}
