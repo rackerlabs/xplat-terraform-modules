@@ -65,11 +65,16 @@ variable "alarm_threshold" {
 }
 
 variable "alarm_name" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "alarm_description" {
-  type = string
+  type    = string
   default = ""
+}
+
+variable "tags" {
+  type    = map
+  default = {}
 }

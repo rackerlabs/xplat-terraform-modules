@@ -1,8 +1,14 @@
 # # Set up SQS --------------------------------------------------------------
 
 locals {
-  alarm_name = var.alarm_name == "" ? "${var.stage}_${var.name}_dead_letter_queue_size" : var.alarm_name
+  alarm_name        = var.alarm_name == "" ? "${var.stage}_${var.name}_dead_letter_queue_size" : var.alarm_name
   alarm_description = var.alarm_description == "" ? "${var.stage}_${var.name} Dead Letter Queue size" : var.alarm_description
+  # If key conflicts, merge() gives precedence to values that appear later in the argument list.
+  # Thus, the preserves default behavior, but allows for overriding if the tag is passed explicitly.
+  tags = merge({
+    stage   = var.stage
+    service = var.name
+  }, var.tags)
 }
 
 # SQS dead letter queue
@@ -10,10 +16,7 @@ resource "aws_sqs_queue" "dead_letter_queue" {
   name                       = "${var.stage}_${var.name}_dead_letter_queue"
   visibility_timeout_seconds = var.dlq_visibility_timeout_seconds
 
-  tags = {
-    stage   = var.stage
-    service = var.name
-  }
+  tags = local.tags
 }
 
 # The actual queue the Lambda will listen to
@@ -23,10 +26,7 @@ resource "aws_sqs_queue" "queue" {
 
   visibility_timeout_seconds = var.visibility_timeout_seconds
 
-  tags = {
-    stage   = var.stage
-    service = var.name
-  }
+  tags = local.tags
 }
 
 # Give permissions to SNS to send to SQS
@@ -112,5 +112,7 @@ resource "aws_cloudwatch_metric_alarm" "dlq_queue_size" {
   alarm_actions             = var.alarm_actions
   insufficient_data_actions = []
   ok_actions                = var.ok_actions
+
+  tags = local.tags
 }
 
