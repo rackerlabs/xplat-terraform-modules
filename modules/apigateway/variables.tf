@@ -58,6 +58,11 @@ variable "lambda_arn" {
   default = ""
 }
 
+variable "extra_template_vars" {
+  type    = map(string)
+  default = {}
+}
+
 variable "name" {
 }
 

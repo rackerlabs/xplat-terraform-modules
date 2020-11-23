@@ -47,7 +47,7 @@ resource "aws_iam_role_policy" "lambda_invoke_policy" {
 data "template_file" "swagger_file" {
   template = var.swagger_template
 
-  vars = {
+  vars = merge({
     authorizer_type            = var.authorizer_type
     authorizer_arn             = var.authorizer_arn
     authorizer_header          = var.authorizer_header
@@ -60,7 +60,7 @@ data "template_file" "swagger_file" {
     stage                      = var.stage != "prod" ? format("%s-", var.stage) : ""
     api_name                   = "${var.stage}_${var.name}"
     description                = "${var.description} (stage: ${var.stage})"
-  }
+  }, var.extra_template_vars)
 }
 
 resource "aws_api_gateway_rest_api" "api" {
