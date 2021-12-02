@@ -71,6 +71,7 @@ data "aws_iam_policy_document" "base_lambda_policy" {
 # Create Lambda role with AssumeRole policy.
 resource "aws_iam_role" "execution_lambda_role" {
   name               = "${var.stage}_${var.name}_lambda"
+  enabled            = true
   assume_role_policy = data.aws_iam_policy_document.execution_lambda_policy.json
 }
 
