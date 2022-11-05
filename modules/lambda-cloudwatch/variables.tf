@@ -1,25 +1,25 @@
 variable "trigger_enabled" {
-  type    = "string"
+  type    = string
   default = "0"
 }
 
 variable "event_name" {
-  type = "string"
+  type = string
 }
 
 variable "event_description" {
-  type = "string"
+  type = string
 }
 
 variable "target_input" {
-  type    = "string"
+  type    = string
   default = "{}"
 }
 
 variable "schedule_expression" {
-  type = "string"
+  type = string
 }
 
 variable "lambda_arn" {
-  type = "string"
+  type = string
 }

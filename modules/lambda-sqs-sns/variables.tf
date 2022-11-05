@@ -20,43 +20,43 @@ variable "dlq_visibility_timeout_seconds" {
 }
 
 variable "enable_monitoring" {
-  type    = "string"
+  type    = string
   default = 0
 }
 
 # List of SNS topic ARNs and/or email addresses
 variable "alarm_actions" {
-  type    = "list"
+  type    = list
   default = []
 }
 
 # If you want the alerts to auto-clear, use this as well
 variable "ok_actions" {
-  type    = "list"
+  type    = list
   default = []
 }
 
 variable "filter_policy" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "max_receive_count" {
-  type    = "string"
+  type    = string
   default = 4
 }
 
 variable "trigger_enabled" {
-  type    = "string"
+  type    = string
   default = true
 }
 
 variable "batch_size" {
-  type    = "string"
+  type    = string
   default = 5
 }
 
 variable "alarm_threshold" {
-  type    = "string"
+  type    = string
   default = 1
 }

@@ -15,7 +15,7 @@ locals {
 }
 
 data "template_file" "host_name" {
-  template = "$${isProduction ? domain : format("%s.%s", stage, domain)}"
+  template = "$${isProduction ? domain : format(%s.%s, stage, domain)}"
 
   vars {
     isProduction = "${var.stage == "prod"}"

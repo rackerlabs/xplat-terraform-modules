@@ -1,23 +1,23 @@
 variable "stage" {
-    type    = "string"
+    type    = string
     default = ""
 }
 variable "region" {
-    type    = "string"
+    type    = string
     default = ""
 }
 variable "acl_association_resource_arn" {
-    type    = "string"
+    type    = string
     default = ""
 }
 variable "api_name" {
-    type    = "string"
+    type    = string
     default = ""
 }
 # Valid values are BLOCK or ALLOW
 # The correct setting is almost always ALLOW.
 variable "web_acl_default_action" {
-    type    = "string"
+    type    = string
     default = "ALLOW"
 }
 
@@ -27,45 +27,45 @@ variable "web_acl_default_action" {
 # is an intentional decision. 
 
 variable "ip_blacklist_default_action" {
-    type    = "string"
+    type    = string
     default = "COUNT"
 }
 
 variable "rate_ip_throttle_default_action" {
-    type    = "string"
+    type    = string
     default = "COUNT"
 }
 
 variable "xss_match_rule_default_action" {
-    type    = "string"
+    type    = string
     default = "COUNT"
 }
 
 variable "byte_match_traversal_default_action" {
-    type    = "string"
+    type    = string
     default = "COUNT"
 }
 
 variable "byte_match_webroot_default_action" {
-    type    = "string"
+    type    = string
     default = "COUNT"
 }
 
 variable "sql_injection_default_action" {
-    type    = "string"
+    type    = string
     default = "COUNT"
 }
 
 # rate throttle IP Range(s)
 # Must be in CIDR format
 variable "iplist_throttle_CIDR_0" {
-    type = "string"
+    type = string
     default = "0.0.0.0/32"
 }
 
 # Requests per 5 Minutes.
 variable "rate_ip_throttle_limit" {
-    type    = "string"
+    type    = string
     default = 5000
 }
 
@@ -85,7 +85,7 @@ variable "rate_ip_throttle_limit" {
 # is an intentional decision.
 
 variable "enabled" {
-    type = "string"
+    type = string
     default = 0
 }
 

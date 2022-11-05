@@ -86,7 +86,7 @@ resource "aws_api_gateway_deployment" "stage" {
 data "aws_acm_certificate" "ssl_cert" {
   count = "${var.enable_custom_domain}"
 
-  provider    = "aws.us-east-1"     # Set the us-east-1 provider from above.
+  provider    = aws.us-east-1     # Set the us-east-1 provider from above.
   domain      = "${var.ssl_domain}"
   statuses    = ["ISSUED"]
   most_recent = true

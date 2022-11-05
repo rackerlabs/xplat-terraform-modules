@@ -5,12 +5,12 @@ variable "s3_arn" {}
 
 # Actions that the Lambda function should be able to take against the S3 bucket
 variable "s3_policy_actions" {
-  type    = "list"
+  type    = list
   default = ["s3:GetObject"]
 }
 
 # S3 events to trigger the Lambda function for
 variable "s3_events" {
-  type    = "list"
+  type    = list
   default = ["s3:ObjectCreated:*"]
 }

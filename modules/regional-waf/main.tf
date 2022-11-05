@@ -423,7 +423,7 @@ resource "aws_wafregional_rate_based_rule" "rate_ip_throttle" {
         negated = false
     }
 
-    depends_on = ["aws_wafregional_ipset.iplist_throttle"]
+    depends_on = [aws_wafregional_ipset.iplist_throttle]
 
     count      = "${var.enabled}"
 
@@ -443,7 +443,7 @@ resource "aws_wafregional_rule" "xss_match_rule" {
         negated = false
     }
 
-    depends_on = ["aws_wafregional_xss_match_set.xss_match_conditions"]
+    depends_on = [aws_wafregional_xss_match_set.xss_match_conditions]
 
     count      = "${var.enabled}"
 
@@ -464,7 +464,7 @@ resource "aws_wafregional_rule" "sql_injection_rule" {
         negated = false
     }
 
-    depends_on = ["aws_wafregional_sql_injection_match_set.sql_injection_match_set"]
+    depends_on = [aws_wafregional_sql_injection_match_set.sql_injection_match_set]
 
     count      = "${var.enabled}"
 
@@ -487,7 +487,7 @@ resource "aws_wafregional_rule" "byte_match_traversal" {
       negated = false
   }
 
-    depends_on = ["aws_wafregional_byte_match_set.byte_set_traversal"]
+    depends_on = [aws_wafregional_byte_match_set.byte_set_traversal]
 
     count      = "${var.enabled}"
 
@@ -509,7 +509,7 @@ resource "aws_wafregional_rule" "byte_match_webroot" {
       negated = false
   }
 
-    depends_on = ["aws_wafregional_byte_match_set.byte_set_webroot_requests"]
+    depends_on = [aws_wafregional_byte_match_set.byte_set_webroot_requests]
 
     count      = "${var.enabled}"
 
@@ -522,18 +522,18 @@ resource "aws_wafregional_web_acl" "rms_web_acl" {
     # metric_name is alpha numeric only.
     metric_name = "${replace(var.stage, "/[^a-zA-Z0-9]/", "")}${replace(var.region, "/[^a-zA-Z0-9]/", "")}${replace(var.api_name, "/[^a-zA-Z0-9]/", "")}rmswebacl"
     depends_on  = [
-        "aws_wafregional_rate_based_rule.rate_ip_throttle",
-        "aws_wafregional_rule.ip_blacklist",
-        "aws_wafregional_rule.byte_match_traversal",
-        "aws_wafregional_rule.xss_match_rule",
-        "aws_wafregional_rule.byte_match_webroot",
-        "aws_wafregional_rule.sql_injection_rule"
+        aws_wafregional_rate_based_rule.rate_ip_throttle,
+        aws_wafregional_rule.ip_blacklist,
+        aws_wafregional_rule.byte_match_traversal,
+        aws_wafregional_rule.xss_match_rule,
+        aws_wafregional_rule.byte_match_webroot,
+        aws_wafregional_rule.sql_injection_rule
     ]
 
     default_action {
        type = "${var.web_acl_default_action}"
         }
-    
+
     count = "${var.enabled}"
 
     rule {

@@ -78,7 +78,7 @@ data "template_file" "function_version" {
     function_version = "${aws_lambda_function.lambda.version}"
   }
 
-  depends_on = ["aws_lambda_function.lambda"]
+  depends_on = [aws_lambda_function.lambda]
 }
 
 resource "aws_lambda_alias" "lambda_alias" {
@@ -86,7 +86,7 @@ resource "aws_lambda_alias" "lambda_alias" {
   function_name    = "${aws_lambda_function.lambda.arn}"
   function_version = "${data.template_file.function_version.rendered}"
 
-  depends_on = ["aws_lambda_function.lambda", "data.template_file.function_version"]
+  depends_on = [aws_lambda_function.lambda, data.template_file.function_version]
 }
 
 # CloudWatch Alarms
