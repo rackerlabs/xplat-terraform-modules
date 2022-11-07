@@ -93,3 +93,8 @@ variable "layers" {
   type    = list
   default = []
 }
+
+variable "source_code_hash" {
+  type    = string
+  default = null
+}
