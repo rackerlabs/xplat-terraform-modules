@@ -64,7 +64,7 @@ resource "aws_lambda_function" "lambda" {
   layers                         = var.layers
 
   tracing_config {
-    mode = "${var.tracing_mode}"
+    mode = var.tracing_mode
   }
 
   vpc_config {
@@ -82,7 +82,7 @@ resource "aws_lambda_function" "lambda" {
 data "template_file" "function_version" {
   template = "$${function_version}"
 
-  vars {
+  vars = {
     function_version = "${aws_lambda_function.lambda.version}"
   }
 
@@ -112,7 +112,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_throttles" {
   threshold           = "${var.throttle_threshold}"
   treat_missing_data  = "notBreaching"
 
-  dimensions {
+  dimensions = {
     FunctionName = "${var.stage}_${var.name}"
     Resource     = "${var.stage}_${var.name}:${var.stage}"
   }
@@ -136,7 +136,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   threshold           = "1"
   treat_missing_data  = "notBreaching"
 
-  dimensions {
+  dimensions = {
     FunctionName = "${var.stage}_${var.name}"
     Resource     = "${var.stage}_${var.name}:${var.stage}"
   }
