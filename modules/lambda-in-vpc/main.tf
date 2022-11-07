@@ -68,12 +68,12 @@ resource "aws_lambda_function" "lambda" {
   }
 
   vpc_config {
-    subnet_ids         = ["${var.subnet_ids}"]
-    security_group_ids = ["${var.security_group_ids}"]
+    subnet_ids         = var.subnet_ids
+    security_group_ids = [var.security_group_ids]
   }
 
   environment {
-    variables = "${var.env_variables}"
+    variables = var.env_variables
   }
 }
 
@@ -90,7 +90,7 @@ data "template_file" "function_version" {
 }
 
 resource "aws_lambda_alias" "lambda_alias" {
-  name             = "${var.stage}"
+  name             = var.stage
   function_name    = "${aws_lambda_function.lambda.arn}"
   function_version = "${data.template_file.function_version.rendered}"
 
