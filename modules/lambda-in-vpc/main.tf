@@ -49,19 +49,19 @@ resource "aws_iam_role_policy" "base_lambda_policy" {
 # Lambda
 resource "aws_lambda_function" "lambda" {
   function_name                  = "${var.stage}_${var.name}"
-  filename                       = "${var.file}"
+  filename                       = var.file
   role                           = "${aws_iam_role.execution_lambda_role.arn}"
-  handler                        = "${var.handler}"
-  memory_size                    = "${var.memory_size}"
-  timeout                        = "${var.timeout}"
-  publish                        = "${var.publish}"
-  source_code_hash               = "${base64sha256(file("${var.file}"))}"
-  runtime                        = "${var.runtime}"
+  handler                        = var.handler
+  memory_size                    = var.memory_size
+  timeout                        = var.timeout
+  publish                        = var.publish
+  source_code_hash               = "${base64sha256(file(var.file))}"
+  runtime                        = var.runtime
   description                    = "${var.description} (stage: ${var.stage})"
-  kms_key_arn                    = "${var.kms_key_arn}"
-  tags                           = "${var.tags}"
-  reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
-  layers                         = ["${var.layers}"]
+  kms_key_arn                    = var.kms_key_arn
+  tags                           = var.tags
+  reserved_concurrent_executions = var.reserved_concurrent_executions
+  layers                         = [var.layers]
 
   tracing_config {
     mode = "${var.tracing_mode}"
@@ -69,7 +69,7 @@ resource "aws_lambda_function" "lambda" {
 
   vpc_config {
     subnet_ids         = var.subnet_ids
-    security_group_ids = [var.security_group_ids]
+    security_group_ids = var.security_group_ids
   }
 
   environment {
