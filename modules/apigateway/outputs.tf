@@ -13,3 +13,6 @@ output "invoke_url" {
   value = format("https://%s", var.custom_domain)
 }
 
+output "deployment_id" {
+  value = aws_api_gateway_deployment.stage.id
+}
