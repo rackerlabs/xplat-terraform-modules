@@ -74,7 +74,6 @@ resource "aws_api_gateway_rest_api" "api" {
 
 resource "aws_api_gateway_deployment" "stage" {
   rest_api_id = aws_api_gateway_rest_api.api.id
-  stage_name  = var.stage
 
   variables = {
     "version" = md5(data.template_file.swagger_file.rendered)
@@ -83,6 +82,12 @@ resource "aws_api_gateway_deployment" "stage" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "aws_api_gateway_stage" "stage" {
+  stage_name    = var.stage
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  deployment_id = aws_api_gateway_deployment.stage.id
 }
 
 data "aws_acm_certificate" "ssl_cert" {
