@@ -84,11 +84,11 @@ resource "aws_api_gateway_deployment" "stage" {
   }
 }
 
-resource "aws_api_gateway_stage" "stage" {
-  stage_name    = var.stage
-  rest_api_id   = aws_api_gateway_rest_api.api.id
-  deployment_id = aws_api_gateway_deployment.stage.id
-}
+# resource "aws_api_gateway_stage" "stage" {
+#   stage_name    = var.stage
+#   rest_api_id   = aws_api_gateway_rest_api.api.id
+#   deployment_id = aws_api_gateway_deployment.stage.id
+# }
 
 data "aws_acm_certificate" "ssl_cert" {
   count = var.enable_custom_domain ? 1 : 0
