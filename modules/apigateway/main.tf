@@ -107,6 +107,12 @@ resource "aws_api_gateway_domain_name" "domain" {
   tags = var.tags
 }
 
+resource "aws_api_gateway_stage" "this" {
+  stage_name    = var.stage
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  deployment_id = aws_api_gateway_deployment.stage.id
+}
+
 resource "aws_api_gateway_base_path_mapping" "basepath" {
   count = var.enable_custom_domain ? 1 : 0
 
